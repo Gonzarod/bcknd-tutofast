@@ -1,4 +1,4 @@
-package com.evertix.tutofastbackend.configuration;
+package com.evertix.tutofastbackend.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -11,7 +11,7 @@ public class OpenApiConfig {
     @Bean(name = "tutofastOpenApi")
     public OpenAPI tutofastOpenApi() {
         // Available at
-        // http://localhost:8181/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
+        // http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
         return new OpenAPI()
                 .components(new Components())
                 .info(new Info().title("TutoFast Application API Documentation").description(

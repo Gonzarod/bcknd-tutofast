@@ -2,7 +2,8 @@ package com.evertix.tutofastbackend.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -21,25 +22,22 @@ public class User extends AuditModel{
 
     @Column(unique = true)
     @NotNull(message = "Name cannot be null")
-    @NotBlank(message = "Name cannot be null")
+    @NotBlank(message = "Name cannot be blank")
     @Size(max = 100)
     private String username;
 
-
     @NotNull(message = "Password cannot be null")
-    @NotBlank(message = "Password cannot be null")
+    @NotBlank(message = "Password cannot be blank")
     @Size(max = 100)
     private String password;
 
-
     @NotNull(message = "Name cannot be null")
-    @NotBlank(message = "Name cannot be null")
+    @NotBlank(message = "Name cannot be blank")
     @Size(max = 100)
     private String name;
 
-
     @NotNull(message = "LastName cannot be null")
-    @NotBlank(message = "LastName cannot be null")
+    @NotBlank(message = "LastName cannot be blank")
     @Size(max = 100)
     private String lastName;
 
@@ -47,19 +45,31 @@ public class User extends AuditModel{
     @Temporal(TemporalType.TIMESTAMP)
     private Date birthday;
 
-
+    @NotNull(message = "Email cannot be null")
+    @NotBlank(message = "Email cannot be blank")
+    @Size(max = 30)
+    private String email;
 
     @NotNull(message = "Phone cannot be null")
-    @NotBlank(message = "Phone cannot be null")
+    @NotBlank(message = "Phone cannot be blank")
     @Size(max = 12)
     private String phone;
 
     @NotNull(message = "Phone cannot be null")
-    @NotBlank(message = "Phone cannot be null")
+    @NotBlank(message = "Phone cannot be blank")
     @Size(max = 150)
     private String address;
 
     private int totalStar;
 
     private Boolean active;
+
+    @Size(max = 50)
+    private String linkedln;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    //@JsonIgnore
+    private Role role;
 }
