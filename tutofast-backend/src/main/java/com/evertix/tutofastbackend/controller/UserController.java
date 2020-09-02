@@ -35,7 +35,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/roles/{rolId}/users")
+    @GetMapping("/roles/{role}/users")
     @Operation(summary = "Get All Users By Rol", description = "Get All Users By Rol", tags = {"User"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
@@ -52,8 +52,8 @@ public class UserController {
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
             })
-    public Page<UserResource> getAllUsersByRolId(@PathVariable(name = "rolId") Long rolId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
-        Page<User> userPage = userService.getAllUsersByRolId(rolId, pageable);
+    public Page<UserResource> getAllUsersByRolId(@PathVariable(name = "role") String role, @PageableDefault @Parameter(hidden = true) Pageable pageable){
+        Page<User> userPage = userService.getAllUsersByRole(role, pageable);
         List<UserResource> resources = userPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
         return new PageImpl<>(resources,pageable,resources.size());
     }
@@ -64,26 +64,23 @@ public class UserController {
         return convertToResource(userService.getUserById(userId));
     }
 
-    @PostMapping("/roles/{rolId}/users")
+    @PostMapping("/users")
     @Operation(summary = "Post User", description = "Create User", tags = {"User"})
-    public UserResource createUser(@PathVariable(name = "rolId") Long rolId,
-                                   @Valid @RequestBody UserSaveResource resource){
-        return convertToResource(userService.createUser(rolId, convertToEntity(resource)));
+    public UserResource createUser(@Valid @RequestBody UserSaveResource resource){
+        return convertToResource(userService.createUser(convertToEntity(resource)));
     }
 
-    @PutMapping("/roles/{rolId}/users/{userId}")
+    @PutMapping("/users/{userId}")
     @Operation(summary = "Put User", description = "Update User", tags = {"User"})
-    public UserResource updateUser(@PathVariable(name = "rolId") Long rolId,
-                                   @PathVariable(name = "userId") Long userId,
+    public UserResource updateUser(@PathVariable(name = "userId") Long userId,
                                    @Valid @RequestBody UserSaveResource resource){
-        return convertToResource(userService.updateUser(rolId, userId, convertToEntity(resource)));
+        return convertToResource(userService.updateUser(userId, convertToEntity(resource)));
     }
 
-    @DeleteMapping("/roles/{rolId}/users/{userId}")
+    @DeleteMapping("/users/{userId}")
     @Operation(summary = "Delete User", description = "Delete User", tags = {"User"})
-    public ResponseEntity<?> deleteUser(@PathVariable(name = "rolId") Long rolId,
-                                        @PathVariable(name = "userId") Long userId){
-        return userService.deleteUser(rolId, userId);
+    public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long userId){
+        return userService.deleteUser(userId);
     }
 
     private User convertToEntity(UserSaveResource resource){return mapper.map(resource, User.class);}

@@ -9,6 +9,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -36,8 +37,7 @@ public class UserSaveResource {
     private String lastName;
 
     @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date birthday;
+    private LocalDate birthday;
 
     @NotNull(message = "Email cannot be null")
     @NotBlank(message = "Email cannot be blank")
@@ -60,4 +60,6 @@ public class UserSaveResource {
 
     @Size(max = 50)
     private String linkedln;
+
+    private String role;
 }

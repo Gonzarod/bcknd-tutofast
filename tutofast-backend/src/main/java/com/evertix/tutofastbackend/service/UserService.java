@@ -6,9 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
-    Page<User> getAllUsersByRolId(Long rolId, Pageable pageable);
+    Page<User> getAllUsersByRole(String role, Pageable pageable);
     User getUserById(Long userId);
-    User createUser(Long rolId, User user);
-    User updateUser(Long rolId, Long userId, User userDetails);
-    ResponseEntity<?> deleteUser(Long rolId, Long userId);
+    User createUser(User user);
+    User updateUser(Long userId, User userDetails);
+    ResponseEntity<?> deleteUser(Long userId);
+
 }

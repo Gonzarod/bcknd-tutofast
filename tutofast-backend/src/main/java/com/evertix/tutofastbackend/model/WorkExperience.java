@@ -9,6 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -21,12 +23,10 @@ public class WorkExperience extends AuditModel{
     private Long id;
 
     @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date start_at;
+    private LocalDate start_at;
 
     @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date end_at;
+    private LocalDate end_at;
 
     @NotNull(message = "Workplace cannot be null")
     @NotBlank(message = "Workplace cannot be null")

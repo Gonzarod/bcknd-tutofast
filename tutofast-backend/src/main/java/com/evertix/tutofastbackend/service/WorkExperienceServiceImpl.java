@@ -20,7 +20,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService{
 
     @Override
     public Page<WorkExperience> getAllWorkExperiencesByUserId(Long userId, Pageable pageable) {
-        return workExperienceRepository.findAllByUser(userId, pageable);
+        return workExperienceRepository.findAllByUserId(userId, pageable);
     }
 
     @Override
@@ -33,19 +33,29 @@ public class WorkExperienceServiceImpl implements WorkExperienceService{
 
     @Override
     public WorkExperience updateWorkExperience(Long userId, Long workExperienceId, WorkExperience workExperienceDetails) {
-        return workExperienceRepository.findById(workExperienceId).map(workExperience -> {
-            workExperience.setStart_at(workExperienceDetails.getStart_at());
-            workExperience.setEnd_at(workExperienceDetails.getEnd_at());
-            workExperience.setWorkplace(workExperienceDetails.getWorkplace());
-            return workExperienceRepository.save(workExperience);
-        }).orElseThrow(()-> new ResourceNotFoundException("WorkExperience with Id: "+workExperienceId+" not found"));
+        return userRepository.findById(userId).map(user -> {
+            return workExperienceRepository.findById(workExperienceId).map(workExperience -> {
+                workExperience.setUser(user);
+                workExperience.setStart_at(workExperienceDetails.getStart_at());
+                workExperience.setEnd_at(workExperienceDetails.getEnd_at());
+                workExperience.setWorkplace(workExperienceDetails.getWorkplace());
+                return workExperienceRepository.save(workExperience);
+
+            }).orElseThrow(()-> new ResourceNotFoundException("WorkExperience with Id: "+workExperienceId+" not found"));
+
+        }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+userId+" not found"));
+
     }
 
     @Override
     public ResponseEntity<?> deleteWorkExperience(Long userId, Long workExperienceId) {
-        return workExperienceRepository.findById(workExperienceId).map(workExperience -> {
-            workExperienceRepository.delete(workExperience);
-            return ResponseEntity.ok().build();
-        }).orElseThrow(()-> new ResourceNotFoundException("WorkExperience with Id: "+workExperienceId+" not found"));
+
+        return userRepository.findById(userId).map(user -> {
+            return workExperienceRepository.findById(workExperienceId).map(workExperience -> {
+                workExperienceRepository.delete(workExperience);
+                return ResponseEntity.ok().build();
+            }).orElseThrow(()-> new ResourceNotFoundException("WorkExperience with Id: "+workExperienceId+" not found"));
+        }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+userId+" not found"));
+
     }
 }

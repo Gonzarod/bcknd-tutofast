@@ -4,14 +4,15 @@ import com.evertix.tutofastbackend.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
 @Setter
 public class WorkExperienceResource {
     private Long id;
-    private Date start_at;
-    private Date end_at;
+    private LocalDate start_at;
+    private LocalDate end_at;
     private String workplace;
     private User user;
 }

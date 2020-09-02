@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -42,8 +43,7 @@ public class User extends AuditModel{
     private String lastName;
 
     @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date birthday;
+    private LocalDate birthday;
 
     @NotNull(message = "Email cannot be null")
     @NotBlank(message = "Email cannot be blank")
@@ -67,9 +67,5 @@ public class User extends AuditModel{
     @Size(max = 50)
     private String linkedln;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "role_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    //@JsonIgnore
-    private Rol role;
+    private String role;
 }

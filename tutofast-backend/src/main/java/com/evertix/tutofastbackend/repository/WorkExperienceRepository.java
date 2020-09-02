@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkExperienceRepository extends JpaRepository<WorkExperience, Long> {
-    Page<WorkExperience> findAllByUser(Long userId, Pageable pageable);
+    Page<WorkExperience> findAllByUserId(Long userId, Pageable pageable);
 }
