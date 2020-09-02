@@ -1,25 +1,19 @@
-package com.evertix.tutofastbackend.model;
+package com.evertix.tutofastbackend.resource;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-@Entity
-@Table(name="users")
 @Getter
 @Setter
-public class User extends AuditModel{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class UserSaveResource {
     @Column(unique = true)
     @NotNull(message = "Name cannot be null")
     @NotBlank(message = "Name cannot be blank")
@@ -66,10 +60,4 @@ public class User extends AuditModel{
 
     @Size(max = 50)
     private String linkedln;
-
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "role_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    //@JsonIgnore
-    private Rol role;
 }

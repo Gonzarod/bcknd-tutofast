@@ -1,22 +1,16 @@
-package com.evertix.tutofastbackend.model;
+package com.evertix.tutofastbackend.resource;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
-@Table(name="roles")
 @Getter
 @Setter
-public class Role extends AuditModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class RolSaveResource {
     @Column(unique = true)
     @NotNull(message = "Name cannot be null")
     @NotBlank(message = "Name cannot be blank")
