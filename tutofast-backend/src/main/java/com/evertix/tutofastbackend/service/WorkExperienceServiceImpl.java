@@ -40,22 +40,17 @@ public class WorkExperienceServiceImpl implements WorkExperienceService{
                 workExperience.setEnd_at(workExperienceDetails.getEnd_at());
                 workExperience.setWorkplace(workExperienceDetails.getWorkplace());
                 return workExperienceRepository.save(workExperience);
-
             }).orElseThrow(()-> new ResourceNotFoundException("WorkExperience with Id: "+workExperienceId+" not found"));
-
         }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+userId+" not found"));
-
     }
 
     @Override
     public ResponseEntity<?> deleteWorkExperience(Long userId, Long workExperienceId) {
-
         return userRepository.findById(userId).map(user -> {
             return workExperienceRepository.findById(workExperienceId).map(workExperience -> {
                 workExperienceRepository.delete(workExperience);
                 return ResponseEntity.ok().build();
             }).orElseThrow(()-> new ResourceNotFoundException("WorkExperience with Id: "+workExperienceId+" not found"));
         }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+userId+" not found"));
-
     }
 }

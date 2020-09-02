@@ -2,15 +2,12 @@ package com.evertix.tutofastbackend.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name="users")
@@ -67,5 +64,8 @@ public class User extends AuditModel{
     @Size(max = 50)
     private String linkedln;
 
+    @NotNull(message = "Role cannot be null")
+    @NotBlank(message = "Role cannot be blank")
+    @Size(max = 20)
     private String role;
 }

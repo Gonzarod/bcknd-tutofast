@@ -14,7 +14,6 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
     public Page<User> getAllUsersByRole(String role, Pageable pageable) {
         return userRepository.findAllByRole(role, pageable);
@@ -27,10 +26,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
-
-    }
+    public User createUser(User user) {return userRepository.save(user);}
 
     @Override
     public User updateUser(Long userId, User userDetails) {
@@ -46,7 +42,7 @@ public class UserServiceImpl implements UserService{
             user.setActive(userDetails.getActive());
             user.setLinkedln(userDetails.getLinkedln());
             return userRepository.save(user);
-        }).orElseThrow(()-> new ResourceNotFoundException("User not found whit Id "+userId));
+        }).orElseThrow(()-> new ResourceNotFoundException("User whit Id: "+userId+" not found"));
     }
 
     @Override

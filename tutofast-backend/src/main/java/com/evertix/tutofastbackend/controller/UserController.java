@@ -36,7 +36,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/roles/{role}/users")
-    @Operation(summary = "Get All Users By Rol", description = "Get All Users By Rol", tags = {"User"},
+    @Operation(summary = "Get All Users By Role", description = "Get All Users By Role", tags = {"User"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -52,7 +52,7 @@ public class UserController {
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
             })
-    public Page<UserResource> getAllUsersByRolId(@PathVariable(name = "role") String role, @PageableDefault @Parameter(hidden = true) Pageable pageable){
+    public Page<UserResource> getAllUsersByRole(@PathVariable(name = "role") String role, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<User> userPage = userService.getAllUsersByRole(role, pageable);
         List<UserResource> resources = userPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
         return new PageImpl<>(resources,pageable,resources.size());
