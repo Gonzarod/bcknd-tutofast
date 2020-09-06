@@ -6,28 +6,38 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
+
 
 @Entity
-@Table(name = "subscriptions")
+@Table(name="reviews")
 @Getter
 @Setter
-public class Subscription extends AuditModel {
+public class Review extends AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean active;
+    @NotNull(message = "Description cannot be null")
+    @NotBlank(message = "Description cannot be null")
+    @Size(max = 250)
+    private String description;
+
+    // ONLY FOR STUDENT
+    @Max(value = 5)
+    private Short stars;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "student_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     //@JsonIgnore
-    private User user;
+    private User student;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "plan_id", nullable = false)
+    @JoinColumn(name = "teacher_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     //@JsonIgnore
-    private Plan plan;
+    private User teacher;
+
 
 }
