@@ -20,13 +20,18 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public Page<User> getAllUsersByCourseId(Long courseId, Pageable pageable) {
+        return userRepository.findAllByCoursesId(courseId, pageable);
+    }
+
+    @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(()->
                 new ResourceNotFoundException("User with Id: "+userId+" not found"));
     }
 
     @Override
-    public User createUser(User user) {return userRepository.save(user);}
+    public User createUser(User user) { return userRepository.save(user); }
 
     @Override
     public User updateUser(Long userId, User userDetails) {
