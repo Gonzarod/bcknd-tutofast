@@ -1,6 +1,5 @@
 package com.evertix.tutofastbackend.repository;
 
-import com.evertix.tutofastbackend.model.Plan;
 import com.evertix.tutofastbackend.model.Subscription;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
