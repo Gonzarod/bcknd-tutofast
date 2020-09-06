@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class SessionDetailsSaveResource {
+public class SessionDetailSaveResource {
     @NotNull(message = "State cannot be null")
     @NotBlank(message = "State cannot be blank")
     @Size(max = 80)

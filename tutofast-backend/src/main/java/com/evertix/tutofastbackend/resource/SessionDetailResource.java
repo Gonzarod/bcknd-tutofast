@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SessionDetailsResource {
+public class SessionDetailResource {
     private Long id;
     private String state;
     private Session session;

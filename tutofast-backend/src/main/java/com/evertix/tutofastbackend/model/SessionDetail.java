@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Table(name = "session_details")
 @Getter
 @Setter
-public class SessionDetails extends AuditModel{
+public class SessionDetail extends AuditModel{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
