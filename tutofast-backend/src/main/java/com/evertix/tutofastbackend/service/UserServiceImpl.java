@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
-
+    /*
     @Override
     public Page<User> getAllUsersByRole(String role, Pageable pageable) {
         return userRepository.findAllByRole(role, pageable);
     }
+     */
 
     @Override
     public Page<User> getAllUsersByCourseId(Long courseId, Pageable pageable) {

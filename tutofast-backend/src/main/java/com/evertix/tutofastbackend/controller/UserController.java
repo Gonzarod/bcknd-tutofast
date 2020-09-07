@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,7 +35,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
+    /* ROLE
     @GetMapping("/roles/{role}/users")
     @Operation(summary = "Get All Users By Role", description = "Get All Users By Role", tags = {"User"},
             parameters = {
@@ -57,6 +58,7 @@ public class UserController {
         List<UserResource> resources = userPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
         return new PageImpl<>(resources,pageable,resources.size());
     }
+    */
 
     @GetMapping("/courses/{courseId}/users")
     @Operation(summary = "Get All Users By Course", description = "Get All Users By Course", tags = {"User"},
@@ -99,6 +101,10 @@ public class UserController {
                                    @Valid @RequestBody UserSaveResource resource){
         return convertToResource(userService.updateUser(userId, convertToEntity(resource)));
     }
+
+    //
+    //TODO: IMPLEMENTAR UN METODO QUE NOS PERMITA ASIGNAR UN CURSO A UN PROFESOR
+    //
 
     @DeleteMapping("/users/{userId}")
     @Operation(summary = "Delete User", description = "Delete User", tags = {"User"})
