@@ -67,7 +67,7 @@ public class SubscriptionController {
         return new PageImpl<>(resources,pageable,resources.size());
     }
 
-    @PostMapping("/subscription/userId/{userId}/plan/{planId}")
+    @PostMapping("/subscription/user/{userId}/plan/{planId}")
     @Operation(summary = "Subscribe To Plan", description = "User Subscribe To Plan", tags = {"Subscription"})
     public SubscriptionResource subscribeToPlan(@PathVariable(name = "userId") Long userId,@PathVariable(name = "planId") Long planId){
         return convertToResource(subscriptionService.subscribeToPlan(userId,planId));

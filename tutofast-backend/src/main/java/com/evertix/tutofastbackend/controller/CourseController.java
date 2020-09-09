@@ -24,7 +24,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "Couse", description = "API")
+@Tag(name = "Course", description = "API")
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200")

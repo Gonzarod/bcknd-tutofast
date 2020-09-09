@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -59,6 +60,7 @@ public class SessionDetailController {
     }
 
     @PostMapping("/sessions/{sessionId}/teachers/{teacherId}/sessionDetails")
+    @PreAuthorize("hasRole('TEACHER')")
     @Operation(summary = "Post SessionDetail", description = "Create SessionDetail", tags = {"SessionDetail"})
     public SessionDetailResource createSessionDetail(@PathVariable(name = "sessionId") Long sessionId,
                                                      @PathVariable(name = "teacherId") Long teacherId,
@@ -67,6 +69,7 @@ public class SessionDetailController {
     }
 
     @PutMapping("/sessions/{sessionId}/teachers/{teacherId}/sessionDetails/{sessionDetailId}")
+    @PreAuthorize("hasRole('STUDENT')")
     @Operation(summary = "Put SessionDetail", description = "Update SessionDetail", tags = {"SessionDetail"})
     public SessionDetailResource updateSessionDetail(@PathVariable(name = "sessionId") Long sessionId,
                                                      @PathVariable(name = "teacherId") Long teacherId,

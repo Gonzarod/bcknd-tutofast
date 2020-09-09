@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -66,7 +67,7 @@ public class PlanController {
 
     //TODO
     //Page<Plan> getPlansByRole(String role,Pageable pageable);
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/plans")
     @Operation(summary = "Post Plan", description = "Create Plan", tags = {"Plan"})
     public PlanResource createPlan(@Valid @RequestBody PlanSaveResource resource){
