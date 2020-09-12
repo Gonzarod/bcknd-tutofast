@@ -15,8 +15,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +58,8 @@ public class PlanController {
     public Page<PlanResource> getAllPlans(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Plan> planPage = planService.getAllPlans(pageable);
         List<PlanResource> resources = planPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        // Pageable page = PageRequest.of(planPage.getSize(), planPage.getTotalPages());
+        return new PageImpl<>(resources, pageable, planPage.getTotalElements());
     }
 
     @GetMapping("/plan/{planId}")
