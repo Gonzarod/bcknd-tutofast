@@ -62,7 +62,8 @@ public class PlanController {
         return new PageImpl<>(resources, pageable, planPage.getTotalElements());
     }
 
-    @GetMapping("/plan/{planId}")
+    @GetMapping("/plans/{planId}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get Plan by Id", description = "Get Plan by Id", tags = {"Plan"})
     public PlanResource getUserById(@PathVariable(name = "planId") Long planId){
         return convertToResource(planService.getPlanById(planId));
@@ -79,6 +80,7 @@ public class PlanController {
     }
 
     @PutMapping("/plans/{planId}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Put Plan", description = "Update User", tags = {"Plan"})
     public PlanResource updatePlan(@PathVariable(name = "planId") Long planId,
                                    @Valid @RequestBody PlanSaveResource resource){
@@ -86,6 +88,7 @@ public class PlanController {
     }
 
     @DeleteMapping("/plans/{planId}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete Plan", description = "Delete Plan", tags = {"Plan"})
     public ResponseEntity<?> deletePlan(@PathVariable(name = "planId") Long planId){
         return planService.deletePlan(planId);
