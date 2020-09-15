@@ -10,15 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/test")
 public class TestController {
-
-/*
-    @GetMapping("/student")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public String userAccess() {
-        return "User Content.";
-    }
-    */
-
     @GetMapping("/all")
     public String anybody() {
         return "Public Content.";
@@ -53,6 +44,4 @@ public class TestController {
     public String teacherResource() {
         return "ONLY FOR TEACHER";
     }
-
-
 }

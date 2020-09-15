@@ -55,7 +55,7 @@ public class SessionController {
     public Page<SessionResource> getAllSessionsByStudentId(@PathVariable(name = "studentId") Long studentId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Session> sessionPage = sessionService.getAllSessionsByStudentId(studentId, pageable);
         List<SessionResource> resources = sessionPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,sessionPage.getTotalElements());
     }
 
     @GetMapping("/courses/{courseName}/sessions")
@@ -78,7 +78,7 @@ public class SessionController {
     public Page<SessionResource> getAllSessionsByCourseName(@PathVariable(name = "courseName") String courseName, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Session> sessionPage = sessionService.getAllSessionsByCourseName(courseName, pageable);
         List<SessionResource> resources = sessionPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,sessionPage.getTotalElements());
     }
 
     @GetMapping("/status/{statusName}/sessions")
@@ -101,7 +101,7 @@ public class SessionController {
     public Page<SessionResource> getAllSessionsByStatus(@PathVariable(name = "statusName") String courseStatus, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Session> sessionPage = sessionService.getAllSessionsByStatus(courseStatus, pageable);
         List<SessionResource> resources = sessionPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,sessionPage.getTotalElements());
     }
 
     @PostMapping("/courses/{courseId}/students/{studentId}/sessions")

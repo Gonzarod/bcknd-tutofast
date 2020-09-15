@@ -14,6 +14,21 @@ import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
 
+    public UserDetailsImpl(Long id, String username, String password, String email, String name, String lastName,
+                           String dni, String phone, LocalDate birthday, String address, List<GrantedAuthority> authorities) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.lastName = lastName;
+        this.dni = dni;
+        this.phone = phone;
+        this.birthday = birthday;
+        this.address = address;
+        this.authorities = authorities;
+    }
+
     private static final long serialVersionUID = 1L;
 
     private Long id;
@@ -25,28 +40,19 @@ public class UserDetailsImpl implements UserDetails {
 
     private String email;
 
-    private Collection<? extends GrantedAuthority> authorities;
-
-    //Aditional Data
-    /*
     private String name;
+
     private String lastName;
-    private LocalDate birthday;
+
+    private String dni;
+
     private String phone;
+
+    private LocalDate birthday;
+
     private String address;
-    private int totalStar;
 
-    private String linkedln;
-    */
-
-    public UserDetailsImpl(Long id, String username, String email, String password,
-                           Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
+    private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
 
@@ -54,25 +60,12 @@ public class UserDetailsImpl implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
 
-        return new UserDetailsImpl(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword(),
-                authorities);
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getName(),
+                                   user.getLastName(), user.getDni(), user.getPhone(), user.getBirthday(), user.getAddress(), authorities);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
     }
 
     @Override
@@ -83,6 +76,27 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() { return name; }
+
+    public String getLastName() { return lastName; }
+
+    public String getDni() { return dni; }
+
+    public String getPhone() { return phone; }
+
+    public LocalDate getBirthday() { return birthday; }
+
+    public String getAddress() { return address; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
@@ -99,7 +113,6 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
 
     @Override
     public boolean isEnabled() {

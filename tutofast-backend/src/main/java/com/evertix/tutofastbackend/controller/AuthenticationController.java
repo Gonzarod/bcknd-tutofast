@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/auth")
 @RestController
 public class AuthenticationController {
-
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -62,11 +61,8 @@ public class AuthenticationController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles, userDetails.getName(),
+                                                userDetails.getLastName(), userDetails.getDni(), userDetails.getPhone(), userDetails.getBirthday(), userDetails.getAddress()));
     }
 
 
@@ -85,9 +81,8 @@ public class AuthenticationController {
         }
 
         // Create new user's account
-        User user = new User(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+        User user = new User(signUpRequest.getUsername(), encoder.encode(signUpRequest.getPassword()), signUpRequest.getEmail(), signUpRequest.getName(),
+                             signUpRequest.getLastName(), signUpRequest.getDni(), signUpRequest.getPhone(), signUpRequest.getBirthday(), signUpRequest.getAddress());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -121,14 +116,8 @@ public class AuthenticationController {
                 }
             });
         }
-
         user.setRoles(roles);
         userRepository.save(user);
-
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
-
-
-
-
 }

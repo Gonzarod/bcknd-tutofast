@@ -55,7 +55,7 @@ public class ResourceController {
     public Page<ResourceResource> getAllResourcesByCourseId(@PathVariable(name = "courseId") Long courseId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Resource> resourcePage = resourceService.getAllResourcesByCourseId(courseId, pageable);
         List<ResourceResource> resources = resourcePage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,resourcePage.getTotalElements());
     }
 
     @GetMapping("/sessions/{sessionId}/resources")
@@ -78,7 +78,7 @@ public class ResourceController {
     public Page<ResourceResource> getAllResourcesBySessionId(@PathVariable(name = "sessionId") Long sessionId, @PageableDefault @Parameter(hidden = true)  Pageable pageable){
         Page<Resource> resourcePage = resourceService.getAllResourcesBySessionId(sessionId, pageable);
         List<ResourceResource> resources = resourcePage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,resourcePage.getTotalElements());
     }
 
     @PostMapping("/sessions/{sessionId}/courses/{courseId}/resources")

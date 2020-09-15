@@ -59,7 +59,7 @@ public class ReviewController {
     public Page<ReviewResource> getAllReviews(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Review> reviewPage = reviewService.getAllReview(pageable);
         List<ReviewResource> resources = reviewPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,reviewPage.getTotalElements());
     }
 
     @GetMapping("reviews/teacher/{teacherId}")

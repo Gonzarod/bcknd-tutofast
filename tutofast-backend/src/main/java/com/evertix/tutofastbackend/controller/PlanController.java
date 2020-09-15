@@ -58,7 +58,6 @@ public class PlanController {
     public Page<PlanResource> getAllPlans(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Plan> planPage = planService.getAllPlans(pageable);
         List<PlanResource> resources = planPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        // Pageable page = PageRequest.of(planPage.getSize(), planPage.getTotalPages());
         return new PageImpl<>(resources, pageable, planPage.getTotalElements());
     }
 
@@ -93,10 +92,6 @@ public class PlanController {
     public ResponseEntity<?> deletePlan(@PathVariable(name = "planId") Long planId){
         return planService.deletePlan(planId);
     }
-
-    /*
-    *
-    * */
 
     private Plan convertToEntity(PlanSaveResource resource){return mapper.map(resource, Plan.class);}
     private PlanResource convertToResource(Plan entity){return mapper.map(entity, PlanResource.class);}

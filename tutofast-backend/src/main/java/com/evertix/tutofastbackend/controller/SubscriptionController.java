@@ -54,10 +54,8 @@ public class SubscriptionController {
     public Page<SubscriptionResource> getAllSubscriptions(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Subscription> subscriptionPage = subscriptionService.getAllSubscriptions(pageable);
         List<SubscriptionResource> resources = subscriptionPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,subscriptionPage.getTotalElements());
     }
-
-
 
     @GetMapping("subscriptions/user/{userId}/plans")
     @Operation(summary = "Get Subscription By User Id", description = "Get Subscription By User Id", tags = {"Subscription"})
@@ -88,5 +86,4 @@ public class SubscriptionController {
     }
 
     private SubscriptionResource convertToResource(Subscription entity){return mapper.map(entity, SubscriptionResource.class);}
-
 }

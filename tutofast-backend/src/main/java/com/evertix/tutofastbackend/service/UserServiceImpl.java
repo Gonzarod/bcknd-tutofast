@@ -13,12 +13,6 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
-    /*
-    @Override
-    public Page<User> getAllUsersByRole(String role, Pageable pageable) {
-        return userRepository.findAllByRole(role, pageable);
-    }
-     */
 
     @Override
     public Page<User> getAllUsersByCourseId(Long courseId, Pageable pageable) {
@@ -32,9 +26,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User createUser(User user) { return userRepository.save(user); }
-
-    @Override
     public User updateUser(Long userId, User userDetails) {
         return userRepository.findById(userId).map(user -> {
             user.setUsername(userDetails.getUsername());
@@ -46,7 +37,7 @@ public class UserServiceImpl implements UserService{
             user.setAddress(userDetails.getAddress());
             user.setTotalStar(userDetails.getTotalStar());
             user.setActive(userDetails.getActive());
-            user.setLinkedln(userDetails.getLinkedln());
+            user.setLinkedin(userDetails.getLinkedin());
             return userRepository.save(user);
         }).orElseThrow(()-> new ResourceNotFoundException("User whit Id: "+userId+" not found"));
     }

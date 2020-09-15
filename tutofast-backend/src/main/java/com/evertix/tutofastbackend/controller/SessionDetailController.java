@@ -55,7 +55,7 @@ public class SessionDetailController {
     public Page<SessionDetailResource> getAllSessionDetailsBySessionId(@PathVariable(name = "sessionId") Long sessionId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<SessionDetail> sessionDetailPage = sessionDetailService.getAllSessionDetailsBySessionId(sessionId, pageable);
         List<SessionDetailResource> resources = sessionDetailPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,sessionDetailPage.getTotalElements());
     }
 
     @PostMapping("/sessions/{sessionId}/teachers/{teacherId}/sessionDetails")

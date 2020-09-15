@@ -55,7 +55,7 @@ public class WorkExperienceController {
     public Page<WorkExperienceResource> getAllWorkExperiencesByUserId(@PathVariable(name = "userId") Long userId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<WorkExperience> workExperiencePage = workExperienceService.getAllWorkExperiencesByUserId(userId, pageable);
         List<WorkExperienceResource> resources = workExperiencePage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,workExperiencePage.getTotalElements());
     }
 
     @PostMapping("/users/{userId}/workExperiences")

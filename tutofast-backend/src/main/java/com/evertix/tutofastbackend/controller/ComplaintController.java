@@ -58,9 +58,8 @@ public class ComplaintController {
     public Page<ComplaintResource> getAllComplaints(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Complaint> complaintPage = complaintService.getAllComplaints(pageable);
         List<ComplaintResource> resources = complaintPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,complaintPage.getTotalElements());
     }
-
 
     @GetMapping("/madeByUsers/{madeById}/complaints")
     @Operation(summary = "Get All Complaints By MadeBy", description = "Get All Complaints By MadeBy", tags = {"Complaint"},
@@ -82,9 +81,8 @@ public class ComplaintController {
     public Page<ComplaintResource> getAllComplaintsByMadeById(@PathVariable(name = "madeById") Long madeById, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Complaint> complaintPage = complaintService.getAllComplaintsByMadeById(madeById, pageable);
         List<ComplaintResource> resources = complaintPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,complaintPage.getTotalElements());
     }
-
 
     @GetMapping("/reportedUsers/{reportedId}/complaints")
     @Operation(summary = "Get All Complaints By Reported", description = "Get All Complaints By Reported", tags = {"Complaint"},
@@ -106,9 +104,8 @@ public class ComplaintController {
     public Page<ComplaintResource> getAllComplaintsByReportedId(@PathVariable(name = "reportedId") Long reportedId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Complaint> complaintPage = complaintService.getAllComplaintsByReportedId(reportedId, pageable);
         List<ComplaintResource> resources = complaintPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return new PageImpl<>(resources,pageable,complaintPage.getTotalElements());
     }
-
 
     @PostMapping("/madeBy/{madeById}/reported/{reportedId}/complaints")
     @Operation(summary = "Create Complaint", description = "Create Complaint", tags = {"Complaint"})
