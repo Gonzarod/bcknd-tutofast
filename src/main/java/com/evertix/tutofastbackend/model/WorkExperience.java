@@ -36,4 +36,10 @@ public class WorkExperience extends AuditModel{
     @OnDelete(action = OnDeleteAction.CASCADE)
     //@JsonIgnore
     private User user;
+
+    public WorkExperience(LocalDate start_at, LocalDate end_at, String workplace) {
+        this.start_at=start_at;
+        this.end_at=end_at;
+        this.workplace=workplace;
+    }
 }

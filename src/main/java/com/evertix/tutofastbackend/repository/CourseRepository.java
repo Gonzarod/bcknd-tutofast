@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    Course findByName(String name);
+    Page<Course> findByNameContaining(String name,Pageable pageable);
     Page<Course> findAllByTeachersId(Long teacherId, Pageable pageable);
 }

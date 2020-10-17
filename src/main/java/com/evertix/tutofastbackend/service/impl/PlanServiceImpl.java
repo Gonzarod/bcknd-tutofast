@@ -1,8 +1,9 @@
-package com.evertix.tutofastbackend.service;
+package com.evertix.tutofastbackend.service.impl;
 
 import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
 import com.evertix.tutofastbackend.model.Plan;
 import com.evertix.tutofastbackend.repository.PlanRepository;
+import com.evertix.tutofastbackend.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PlanServiceImpl implements PlanService{
+public class PlanServiceImpl implements PlanService {
 
     @Autowired
     PlanRepository planRepository;

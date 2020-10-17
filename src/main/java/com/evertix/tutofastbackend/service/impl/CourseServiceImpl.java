@@ -1,16 +1,20 @@
-package com.evertix.tutofastbackend.service;
+package com.evertix.tutofastbackend.service.impl;
 
 import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
 import com.evertix.tutofastbackend.model.Course;
+import com.evertix.tutofastbackend.model.User;
 import com.evertix.tutofastbackend.repository.CourseRepository;
+import com.evertix.tutofastbackend.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class CourseServiceImpl implements CourseService{
+public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
@@ -18,7 +22,16 @@ public class CourseServiceImpl implements CourseService{
     public Page<Course> getAllCourses(Pageable pageable) { return courseRepository.findAll(pageable); }
 
     @Override
-    public Course getCourseByName(String courseName) { return courseRepository.findByName(courseName); }
+    public Page<Course> getCoursesByName(String courseName, Pageable pageable) {
+        return this.courseRepository.findByNameContaining(courseName,pageable);
+    }
+
+    @Override
+    public List<User> getAllTeachersOfOneCourse(Long courseId) {
+        return courseRepository.findById(courseId).map(course1 -> {
+            return course1.getTeachers();
+        }).orElseThrow(()-> new ResourceNotFoundException("Course not found"));
+    }
 
     @Override
     public Course createCourse(Course course) { return courseRepository.save(course); }

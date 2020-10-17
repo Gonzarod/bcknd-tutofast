@@ -1,9 +1,10 @@
-package com.evertix.tutofastbackend.service;
+package com.evertix.tutofastbackend.service.impl;
 
 import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
 import com.evertix.tutofastbackend.model.WorkExperience;
 import com.evertix.tutofastbackend.repository.UserRepository;
 import com.evertix.tutofastbackend.repository.WorkExperienceRepository;
+import com.evertix.tutofastbackend.service.WorkExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WorkExperienceServiceImpl implements WorkExperienceService{
+public class WorkExperienceServiceImpl implements WorkExperienceService {
     @Autowired
     private WorkExperienceRepository workExperienceRepository;
 

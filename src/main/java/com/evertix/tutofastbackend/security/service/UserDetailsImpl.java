@@ -31,26 +31,26 @@ public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private final Long id;
 
-    private String username;
+    private final String username;
 
     @JsonIgnore
-    private String password;
+    private final String password;
 
-    private String email;
+    private final String email;
 
-    private String name;
+    private final String name;
 
-    private String lastName;
+    private final String lastName;
 
-    private String dni;
+    private final String dni;
 
-    private String phone;
+    private final String phone;
 
-    private LocalDate birthday;
+    private final LocalDate birthday;
 
-    private String address;
+    private final String address;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -62,6 +62,7 @@ public class UserDetailsImpl implements UserDetails {
 
         return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getName(),
                                    user.getLastName(), user.getDni(), user.getPhone(), user.getBirthday(), user.getAddress(), authorities);
+
     }
 
     public Long getId() {

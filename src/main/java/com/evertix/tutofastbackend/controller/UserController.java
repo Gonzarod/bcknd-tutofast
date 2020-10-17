@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "User", description = "API")
+@Tag(name = "User", description = "API is Ready")
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
     private ModelMapper mapper;
@@ -36,52 +37,73 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/courses/{courseId}/users")
-    @Operation(summary = "Get All Users By Course", description = "Get All Users By Course", tags = {"User"},
-            parameters = {
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Page you want to retrieve (0..N)"
-                            , name = "page"
-                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Number of records per page."
-                            , name = "size"
-                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "20"))),
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Sorting criteria in the format: property(,asc|desc). "
-                            + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-                            , name = "sort"
-                            , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            })
-    public Page<UserResource> getAllUsersByCourseId(@PathVariable(name = "courseId") Long courseId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
-        Page<User> userPage = userService.getAllUsersByCourseId(courseId, pageable);
-        List<UserResource> resources = userPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,userPage.getTotalElements());
+    @GetMapping("/user/usernameExists/{username}")
+    @Operation(summary = "Check username", description = "Check if username is already used by other user. True if is taken, false if not. No authentication is required", tags = {"User"})
+    public boolean userExistByUsername(@PathVariable String username){
+        return this.userService.userExistsByUsername(username);
+    }
+
+    @GetMapping("/user/emailExists/{email}")
+    @Operation(summary = "Check email", description = "Check if email is already used by other user.True if is taken, false if not. No authentication is required", tags = {"User"})
+    public boolean userExistByEmail(@PathVariable String email){
+        return this.userService.userExistsByEmail(email);
+    }
+
+    @PutMapping("user/teacher/{userId}/setLinkedin/")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Set Linkedin", description = "Allows to link Linkedin profile to your Tutofast account. Only accessed by role Teacher",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+    public UserResource setLinkedinProfile(@PathVariable Long userId, @RequestBody String linkedin){
+        return convertToResource(this.userService.setLinkedinProfile(userId,linkedin));
+    }
+
+    @PutMapping("user/teacher/{userId}/addCourses/")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Add Courses", description = "Allows teacher to indicate the list courses that he teaches. Only accessed by role Teacher",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+    public ResponseEntity<?> addCourses(@PathVariable Long userId, @RequestBody List<Long> coursesId){
+        return this.userService.addCourses(userId,coursesId);
+    }
+
+    @PutMapping("user/teacher/{userId}/removeCourses/")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Remove Courses", description = "Allows to remove a list courses. Only accessed by role Teacher",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+    public UserResource removeCourses(@PathVariable Long userId, @RequestBody List<Long> coursesId){
+        return convertToResource(this.userService.removeCourses(userId,coursesId));
     }
 
     @GetMapping("/users/{userId}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get User By Id", description = "View User By Id", tags = {"User"})
     public UserResource getUserById(@PathVariable(name = "userId") Long userId){
         return convertToResource(userService.getUserById(userId));
     }
 
     @PutMapping("/users/{userId}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Put User", description = "Update User", tags = {"User"})
     public UserResource updateUser(@PathVariable(name = "userId") Long userId,
                                    @Valid @RequestBody UserSaveResource resource){
         return convertToResource(userService.updateUser(userId, convertToEntity(resource)));
     }
 
-    //
-    //TODO: IMPLEMENTAR UN METODO QUE NOS PERMITA ASIGNAR UN CURSO A UN PROFESOR
-    //
-
     @DeleteMapping("/users/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Delete User", description = "Delete User", tags = {"User"})
     public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long userId){
         return userService.deleteUser(userId);
     }
 
+    @DeleteMapping("/users/{userId}/baned")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Ban User", description = "Admin can ban user", tags = {"User"})
+    public ResponseEntity<?> banUser(@PathVariable(name = "userId") Long userId){
+        return userService.banUser(userId);
+    }
+
     private User convertToEntity(UserSaveResource resource){return mapper.map(resource, User.class);}
+
     private UserResource convertToResource(User entity){return mapper.map(entity, UserResource.class);}
+
 }

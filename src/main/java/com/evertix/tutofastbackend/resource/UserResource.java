@@ -1,11 +1,13 @@
 package com.evertix.tutofastbackend.resource;
 
+import com.evertix.tutofastbackend.model.Course;
 import com.evertix.tutofastbackend.model.Role;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -13,7 +15,6 @@ import java.util.Set;
 public class UserResource {
     private Long id;
     private String username;
-    private String password;
     private String email;
     private Set<Role> roles;
     private String name;
@@ -25,4 +26,5 @@ public class UserResource {
     private int totalStar;
     private Boolean active;
     private String linkedin;
+    private List<Course> courses;
 }

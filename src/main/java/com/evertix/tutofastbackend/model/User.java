@@ -4,10 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
@@ -97,14 +95,21 @@ public class User extends AuditModel{
     @Size(max = 150)
     private String address;
 
-    @Size(min = 20, max = 999)
-    private int totalStar;
+    private boolean banned;
 
-    private Boolean active;
+    //Additional attribute for Student User (elementary, college, etc)
+    private String educationalStage;
 
-    @Size(max = 100)
+    //Additional attribute for Teacher User
+    private BigDecimal averageStars;
+
+    //Additional attribute for Teacher User
+    private boolean active;
+
+    //Additional attribute for Teacher User
     private String linkedin;
 
+    //Additional attribute for Teacher User
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "assignations",
             joinColumns = {@JoinColumn(name = "teacher_id")}, inverseJoinColumns = {@JoinColumn(name = "course_id")})

@@ -1,9 +1,10 @@
-package com.evertix.tutofastbackend.service;
+package com.evertix.tutofastbackend.service.impl;
 
 import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
 import com.evertix.tutofastbackend.model.Complaint;
 import com.evertix.tutofastbackend.repository.ComplaintRepository;
 import com.evertix.tutofastbackend.repository.UserRepository;
+import com.evertix.tutofastbackend.service.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

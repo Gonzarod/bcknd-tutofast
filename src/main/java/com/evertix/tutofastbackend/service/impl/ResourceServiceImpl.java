@@ -1,10 +1,11 @@
-package com.evertix.tutofastbackend.service;
+package com.evertix.tutofastbackend.service.impl;
 
 import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
 import com.evertix.tutofastbackend.model.Resource;
 import com.evertix.tutofastbackend.repository.CourseRepository;
 import com.evertix.tutofastbackend.repository.ResourceRepository;
 import com.evertix.tutofastbackend.repository.SessionRepository;
+import com.evertix.tutofastbackend.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ResourceServiceImpl implements ResourceService{
+public class ResourceServiceImpl implements ResourceService {
     @Autowired
     private SessionRepository sessionRepository;
 
