@@ -1,5 +1,7 @@
 package com.evertix.tutofastbackend.service.impl;
 
+import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
+import com.evertix.tutofastbackend.model.Course;
 import com.evertix.tutofastbackend.model.ERole;
 import com.evertix.tutofastbackend.model.Role;
 import com.evertix.tutofastbackend.model.User;
@@ -23,9 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,6 +101,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         user.setRoles(roles);
+        user.setCreditHours((short) 0);
+        user.setBanned(false);
+        for(Role role: roles){
+            user.setActive(role.getName() != ERole.ROLE_TEACHER);
+        }
         userRepository.save(user);
 
         return ResponseEntity.ok(mapper.map(user, UserResource.class));
@@ -108,6 +113,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 

@@ -12,24 +12,16 @@ import java.util.Date;
 @Getter
 @Setter
 public class SessionSaveResource {
+
     @Column(nullable = false, updatable = false)
     private Date start_at;
 
     @Column(nullable = false, updatable = false)
     private Date end_at;
 
-    @NotNull(message = "Status cannot be null")
-    @NotBlank(message = "Status cannot be blank")
-    @Size(max = 20)
-    private String status;
-
     @NotNull(message = "Topic cannot be null")
     @NotBlank(message = "Topic cannot be blank")
     @Size(max = 150)
     private String topic;
 
-    @NotNull(message = "Link cannot be null")
-    @NotBlank(message = "Link cannot be blank")
-    @Size(max = 150)
-    private String link;
 }

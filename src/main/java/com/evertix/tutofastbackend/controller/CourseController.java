@@ -44,7 +44,7 @@ public class CourseController {
 
     @GetMapping("/courses")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get All Courses", description = "Get All Courses", tags = {"Course"},
+    @Operation(summary = "Get All Courses", description = "Get All Courses. Endpoint can be accessed by any role", tags = {"Course"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -68,7 +68,7 @@ public class CourseController {
 
     @GetMapping("/courses/{name}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get All Courses by Course Name", description = "Get All Courses by Course Name. Only Access for Authenticated Users", tags = {"Course"},
+    @Operation(summary = "Get All Courses by Course Name", description = "Get All Courses by Course Name. Endpoint can be accessed by any role.", tags = {"Course"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -91,8 +91,8 @@ public class CourseController {
     }
     //
     @GetMapping("/courses/{courseId}/teachers")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Get All Course Teachers", description = "Get All the teachers that teach an specific course. Only Access for Authenticated Users", tags = {"Course"},
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get All Course Teachers", description = "Get All the teachers that teach an specific course. Endpoint can be accessed by any role.", tags = {"Course"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -115,7 +115,7 @@ public class CourseController {
 
     @PostMapping("/courses")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Post Course", description = "Create Course",
+    @Operation(summary = "Post Course", description = "Create Course. Endpoint can be accessed by any role.",
                security = @SecurityRequirement(name = "bearerAuth"), tags = {"Course"})
     public CourseResource createCourse(@Valid @RequestBody CourseSaveResource resource){
         return convertToResource(courseService.createCourse(convertToEntity(resource)));
@@ -123,7 +123,7 @@ public class CourseController {
 
     @PutMapping("/courses/{courseId}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Put Course", description = "Update Course",
+    @Operation(summary = "Put Course", description = "Update Course. Endpoint can be accessed by any role.",
                security = @SecurityRequirement(name = "bearerAuth"), tags = {"Course"})
     public CourseResource updateCourse(@PathVariable(name = "courseId") Long courseId,
                                        @Valid @RequestBody CourseSaveResource resource){
@@ -132,7 +132,7 @@ public class CourseController {
 
     @DeleteMapping("/courses/{courseId}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Delete Course", description = "Delete Course",
+    @Operation(summary = "Delete Course", description = "Delete Course. Endpoint can be accessed by any role.",
                security = @SecurityRequirement(name = "bearerAuth"), tags = {"Course"})
     public ResponseEntity<?> deleteCourse(@PathVariable(name = "courseId") Long courseId){
         return courseService.deleteCourse(courseId);

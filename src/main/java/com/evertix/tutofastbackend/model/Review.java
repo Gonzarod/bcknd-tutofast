@@ -1,6 +1,7 @@
 package com.evertix.tutofastbackend.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -11,6 +12,7 @@ import javax.validation.constraints.*;
 
 @Entity
 @Table(name="reviews")
+@NoArgsConstructor
 @Getter
 @Setter
 public class Review extends AuditModel {

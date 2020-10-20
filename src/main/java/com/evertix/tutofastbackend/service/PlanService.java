@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 public interface PlanService {
     Page<Plan> getAllPlans(Pageable pageable);
     Plan getPlanById(Long planId);
-    Page<Plan> getPlansByRole(String role,Pageable pageable);
     Plan createPlan(Plan plan);
     Plan updatePlan(Long planId, Plan planDetails);
     ResponseEntity<?> deletePlan(Long planId);

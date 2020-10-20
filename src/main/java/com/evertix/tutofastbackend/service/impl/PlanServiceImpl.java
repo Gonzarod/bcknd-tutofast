@@ -28,11 +28,6 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Page<Plan> getPlansByRole(String role, Pageable pageable) {
-        return planRepository.findAllByRole(role,pageable);
-    }
-
-    @Override
     public Plan createPlan(Plan plan) {
         return planRepository.save(plan);
     }
@@ -40,10 +35,9 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public Plan updatePlan(Long planId, Plan planDetails) {
         return planRepository.findById(planId).map(plan -> {
-             plan.setTittle(planDetails.getTittle());
+             plan.setTitle(planDetails.getTitle());
              plan.setHours(planDetails.getHours());
              plan.setPrice(planDetails.getPrice());
-             plan.setRole(planDetails.getRole());
              return planRepository.save(plan);
         }).orElseThrow(()->new ResourceNotFoundException("Plan with Id: "+planId+" not found"));
     }

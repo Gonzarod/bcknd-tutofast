@@ -11,10 +11,7 @@ import com.evertix.tutofastbackend.repository.UserRepository;
 import com.evertix.tutofastbackend.security.payload.response.MessageResponse;
 import com.evertix.tutofastbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,12 +30,12 @@ public class UserServiceImpl implements UserService {
     private CourseRepository courseRepository;
 
     @Override
-    public boolean userExistsByUsername(String username) {
+    public Boolean userExistsByUsername(String username) {
         return this.userRepository.existsByUsername(username);
     }
 
     @Override
-    public boolean userExistsByEmail(String email) {
+    public Boolean userExistsByEmail(String email) {
         return this.userRepository.existsByEmail(email);
     }
 
@@ -64,7 +61,7 @@ public class UserServiceImpl implements UserService {
             user.setPhone(userDetails.getPhone());
             user.setAddress(userDetails.getAddress());
             user.setAverageStars(userDetails.getAverageStars());
-            user.setActive(userDetails.isActive());
+            user.setActive(userDetails.getActive());
             user.setLinkedin(userDetails.getLinkedin());
             return userRepository.save(user);
         }).orElseThrow(()-> new ResourceNotFoundException("User whit Id: "+userId+" not found"));
@@ -101,27 +98,50 @@ public class UserServiceImpl implements UserService {
             user.setCourses(coursesList);
             return ResponseEntity.ok(userRepository.save(user));
         }else {
-            return ResponseEntity.badRequest().body(new MessageResponse("You can set course only for teachers"));
+            return ResponseEntity.badRequest().body(new MessageResponse("You can set courses only for teachers"));
         }
     }
 
     @Override
-    public User removeCourses(Long userId, List<Long> coursesId) {
+    public ResponseEntity<?> removeCourses(Long userId, List<Long> coursesId) {
         User user = this.userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+userId+" not found"));
-        for(Long courseId: coursesId){
-            Course course = this.courseRepository.findById(courseId).orElseThrow(()-> new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
-            user.getCourses().remove(course);
+        List<Course> coursesList = new ArrayList<>();
+        Optional<Role> role = this.roleRepository.findByName(ERole.ROLE_TEACHER);
+        if (user.getRoles().contains(role.orElse(null))){
+            for(Long courseId: coursesId){
+                Course course = this.courseRepository.findById(courseId).orElseThrow(()-> new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
+                user.getCourses().remove(course);
+            }
+            return ResponseEntity.ok(userRepository.save(user));
+        }else {
+            return ResponseEntity.badRequest().body(new MessageResponse("You can set courses only for teachers"));
         }
-        return userRepository.save(user);
+
     }
 
     @Override
     public ResponseEntity<?> banUser(Long userId) {
         return ResponseEntity.ok(
                 this.userRepository.findById(userId).map(user -> {
-                    user.setActive(false);
+                    //user.setActive(false);
+                    user.setBanned(true);
                     return userRepository.save(user);
                 }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+userId+" not found"))
+        );
+    }
+
+    @Override
+    public ResponseEntity<?> activateTeacher(Long userId) {
+        return ResponseEntity.ok(
+                this.userRepository.findById(userId).map(user -> {
+                    Optional<Role> role = this.roleRepository.findByName(ERole.ROLE_TEACHER);
+                    if (user.getRoles().contains(role.orElse(null))){
+                        user.setActive(true);
+                        return ResponseEntity.ok(userRepository.save(user));
+                    }else {
+                        return ResponseEntity.badRequest().body(new MessageResponse("You can only activate user with role teacher"));
+                    }
+                })
         );
     }
 

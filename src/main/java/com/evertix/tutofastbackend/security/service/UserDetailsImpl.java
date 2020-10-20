@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
 
     public UserDetailsImpl(Long id, String username, String password, String email, String name, String lastName,
-                           String dni, String phone, LocalDate birthday, String address, List<GrantedAuthority> authorities) {
+                           String dni, String phone, LocalDate birthday, String address, Boolean active,Boolean banned, List<GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -26,6 +26,8 @@ public class UserDetailsImpl implements UserDetails {
         this.phone = phone;
         this.birthday = birthday;
         this.address = address;
+        this.active=active;
+        this.banned=banned;
         this.authorities = authorities;
     }
 
@@ -52,7 +54,11 @@ public class UserDetailsImpl implements UserDetails {
 
     private final String address;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private final Boolean active;
+
+    private final Boolean banned;
+
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
 
@@ -61,7 +67,7 @@ public class UserDetailsImpl implements UserDetails {
                 .collect(Collectors.toList());
 
         return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getName(),
-                                   user.getLastName(), user.getDni(), user.getPhone(), user.getBirthday(), user.getAddress(), authorities);
+                                   user.getLastName(), user.getDni(), user.getPhone(), user.getBirthday(), user.getAddress(), user.getActive(),user.getBanned(),authorities);
 
     }
 
@@ -95,6 +101,14 @@ public class UserDetailsImpl implements UserDetails {
 
     public String getAddress() { return address; }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public Boolean getBanned() {
+        return banned;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -117,8 +131,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        //TODO : RETURN ACTIVE
-        return true;
+        return !this.banned;
     }
 
     @Override

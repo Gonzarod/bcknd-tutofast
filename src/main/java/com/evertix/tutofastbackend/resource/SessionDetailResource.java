@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class SessionDetailResource {
     private Long id;
-    private String state;
+    private Boolean chosen;
     private Session session;
     private User teacher;
 }

@@ -1,13 +1,14 @@
 package com.evertix.tutofastbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +19,10 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
+@NoArgsConstructor
 @Getter
 @Setter
 public class User extends AuditModel{
-
-    public User() { }
 
     public User(String username, String password, String email, String name,
                 String lastName, String dni, String phone, LocalDate birthday, String address) {
@@ -50,6 +50,7 @@ public class User extends AuditModel{
     @NotNull(message = "Password cannot be null")
     @NotBlank(message = "Password cannot be blank")
     @Size(max = 120,message = "Password must be less than 120 characters")
+    @JsonIgnore
     private String password;
 
     @Column(unique = true)
@@ -95,7 +96,9 @@ public class User extends AuditModel{
     @Size(max = 150)
     private String address;
 
-    private boolean banned;
+    private Boolean banned;
+
+    private Short creditHours;
 
     //Additional attribute for Student User (elementary, college, etc)
     private String educationalStage;
@@ -104,7 +107,7 @@ public class User extends AuditModel{
     private BigDecimal averageStars;
 
     //Additional attribute for Teacher User
-    private boolean active;
+    private Boolean active;
 
     //Additional attribute for Teacher User
     private String linkedin;

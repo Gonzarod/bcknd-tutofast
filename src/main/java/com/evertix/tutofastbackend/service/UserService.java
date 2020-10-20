@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface UserService {
-    boolean userExistsByUsername(String username);
-    boolean userExistsByEmail(String email);
+    Boolean userExistsByUsername(String username);
+    Boolean userExistsByEmail(String email);
     User createUser(User user);
     User getUserById(Long userId);
     User updateUser(Long userId, User userDetails);
@@ -17,7 +17,9 @@ public interface UserService {
     User setLinkedinProfile(Long userId,String linkedin);
 
     ResponseEntity<?> addCourses(Long userId, List<Long> coursesId);
-    User removeCourses(Long userId, List<Long> coursesId);
+    ResponseEntity<?>  removeCourses(Long userId, List<Long> coursesId);
 
     ResponseEntity<?> banUser(Long userId);
+
+    ResponseEntity<?> activateTeacher(Long userId);
 }

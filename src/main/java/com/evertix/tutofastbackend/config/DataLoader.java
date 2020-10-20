@@ -1,16 +1,14 @@
 package com.evertix.tutofastbackend.config;
 
 import com.evertix.tutofastbackend.model.*;
-import com.evertix.tutofastbackend.repository.CourseRepository;
-import com.evertix.tutofastbackend.repository.RoleRepository;
-import com.evertix.tutofastbackend.repository.UserRepository;
-import com.evertix.tutofastbackend.repository.WorkExperienceRepository;
+import com.evertix.tutofastbackend.repository.*;
 import com.evertix.tutofastbackend.security.payload.request.SignUpRequest;
 import com.evertix.tutofastbackend.service.AuthenticationService;
-import com.evertix.tutofastbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -18,32 +16,54 @@ import java.util.*;
 public class DataLoader {
 
     private RoleRepository roleRepository;
-    private WorkExperienceRepository workExperienceRepository;
     private CourseRepository courseRepository;
     private AuthenticationService authenticationService;
     private UserRepository userRepository;
+    private PlanRepository planRepository;
+
     @Autowired
-    public DataLoader(RoleRepository roleRepository,
-                      CourseRepository courseRepository, UserRepository userRepository, AuthenticationService authenticationService) {
+    public DataLoader(RoleRepository roleRepository, CourseRepository courseRepository, AuthenticationService authenticationService,
+                      UserRepository userRepository, PlanRepository planRepository) {
 
         this.roleRepository = roleRepository;
         this.courseRepository = courseRepository;
         this.authenticationService=authenticationService;
         this.userRepository=userRepository;
+        this.planRepository=planRepository;
         LoadData();
     }
 
     private void LoadData() {
 
-        this.loadRoles();
+        this.addRoles();
         this.addCourses();
         this.registerUserAdmin();
         this.registerUserStudent();
         this.registerTeacher();
         this.setTeacherCourses();
+        this.addPlans();
     }
 
-    void loadRoles(){
+    private void addPlans() {
+
+        this.planRepository.save(new Plan("Free","7 day of trial","You are given 4 hours of free session. You can use them within the next 5 days.",
+                                            (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP)));
+
+        this.planRepository.save(new Plan("Basic","30 day","You are given 8 hours of sessions. You can use them in a period of 30 days",
+                (short) 8, BigDecimal.valueOf(90.50).setScale(2, RoundingMode.HALF_UP)));
+
+        this.planRepository.save(new Plan("Platinum","30 day","You are given 12 hours of sessions. You can use them in a period of 30 days",
+                (short) 12, BigDecimal.valueOf(140.00).setScale(2, RoundingMode.HALF_UP)));
+
+        this.planRepository.save(new Plan("Gold","30 day","You are given 20 hours of sessions. You can use them in a period of 30 days",
+                (short) 20, BigDecimal.valueOf(170.00).setScale(2, RoundingMode.HALF_UP)));
+
+        this.planRepository.save(new Plan("Unlimited","Unlimited","You are given unlimited hours of sessions. You can use them in a period of 30 days",
+                (short) 30, BigDecimal.valueOf(250.00).setScale(2, RoundingMode.HALF_UP)));
+
+    }
+
+    void addRoles(){
         List<Role> roles = new ArrayList<Role>();
         roles.add(new Role(ERole.ROLE_STUDENT));
         roles.add(new Role(ERole.ROLE_TEACHER));

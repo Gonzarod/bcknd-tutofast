@@ -5,8 +5,8 @@ import com.evertix.tutofastbackend.model.Role;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +23,8 @@ public class UserResource {
     private String phone;
     private LocalDate birthday;
     private String address;
-    private int totalStar;
+    private Short creditHours;
+    private BigDecimal averageStars;
     private Boolean active;
     private String linkedin;
     private List<Course> courses;

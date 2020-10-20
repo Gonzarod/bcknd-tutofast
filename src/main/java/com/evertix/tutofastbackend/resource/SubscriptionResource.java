@@ -5,11 +5,15 @@ import com.evertix.tutofastbackend.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 public class SubscriptionResource {
 
     private Long id;
+
+    private Date createdAt;
 
     private Boolean active;
 

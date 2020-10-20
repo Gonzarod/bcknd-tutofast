@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SessionDetailServiceImpl implements SessionDetailService {
     @Autowired
@@ -29,6 +31,11 @@ public class SessionDetailServiceImpl implements SessionDetailService {
     }
 
     @Override
+    public List<SessionDetail> getAllSessionDetailsBySessionId(Long sessionId) {
+        return sessionDetailRepository.findAllBySessionId(sessionId);
+    }
+
+    @Override
     public SessionDetail createSessionDetail(Long sessionId, Long teacherId, SessionDetail sessionDetail) {
         return sessionRepository.findById(sessionId).map(session -> {
             return userRepository.findById(teacherId).map(user -> {
@@ -40,13 +47,21 @@ public class SessionDetailServiceImpl implements SessionDetailService {
     }
 
     @Override
+    public SessionDetail acceptTeacher(Long sessionDetailId) {
+        return sessionDetailRepository.findById(sessionDetailId).map(sessionDetail -> {
+            sessionDetail.setChosen(true);
+            return this.sessionDetailRepository.save(sessionDetail);
+        }).orElseThrow(()-> new ResourceNotFoundException("Session Detail with Id: "+sessionDetailId+" not found"));
+    }
+
+    @Override
     public SessionDetail updateSessionDetail(Long sessionId, Long teacherId, Long sessionDetailId, SessionDetail sessionDetailDetails) {
         return sessionRepository.findById(sessionId).map(session -> {
             return userRepository.findById(teacherId).map(user -> {
                 return sessionDetailRepository.findById(sessionDetailId).map(sessionDetail -> {
                     sessionDetail.setTeacher(user);
                     sessionDetail.setSession(session);
-                    sessionDetail.setState(sessionDetailDetails.getState());
+                    //sessionDetail.setState(sessionDetailDetails.getState());
                     return sessionDetailRepository.save(sessionDetail);
                 }).orElseThrow(()-> new ResourceNotFoundException("SessionDetail with Id: "+sessionDetailId+" not found"));
             }).orElseThrow(()-> new ResourceNotFoundException("Teacher with Id: "+teacherId+" not found"));

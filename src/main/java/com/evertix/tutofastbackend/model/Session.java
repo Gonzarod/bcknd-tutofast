@@ -29,8 +29,9 @@ public class Session extends AuditModel{
 
     @NotNull(message = "Status cannot be null")
     @NotBlank(message = "Status cannot be blank")
-    @Size(max = 20)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private EStatus status;
 
     @NotNull(message = "Topic cannot be null")
     @NotBlank(message = "Topic cannot be blank")

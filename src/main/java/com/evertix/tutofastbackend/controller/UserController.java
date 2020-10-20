@@ -38,28 +38,37 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/user/usernameExists/{username}")
-    @Operation(summary = "Check username", description = "Check if username is already used by other user. True if is taken, false if not. No authentication is required", tags = {"User"})
-    public boolean userExistByUsername(@PathVariable String username){
+    @Operation(summary = "Check username", description = "Check if username is already used by other user. True if is taken, false if not. Endpoint is public.", tags = {"User"})
+    public Boolean userExistByUsername(@PathVariable String username){
         return this.userService.userExistsByUsername(username);
     }
 
     @GetMapping("/user/emailExists/{email}")
-    @Operation(summary = "Check email", description = "Check if email is already used by other user.True if is taken, false if not. No authentication is required", tags = {"User"})
-    public boolean userExistByEmail(@PathVariable String email){
+    @Operation(summary = "Check email", description = "Check if email is already used by other user.True if is taken, false if not. Endpoint is public.", tags = {"User"})
+    public Boolean userExistByEmail(@PathVariable String email){
         return this.userService.userExistsByEmail(email);
     }
 
     @PutMapping("user/teacher/{userId}/setLinkedin/")
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Set Linkedin", description = "Allows to link Linkedin profile to your Tutofast account. Only accessed by role Teacher",
+    @Operation(summary = "Set Linkedin", description = "Allows to link Linkedin profile to your Tutofast account. Endpoint can only be accessed by role teacher and admin.",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
     public UserResource setLinkedinProfile(@PathVariable Long userId, @RequestBody String linkedin){
         return convertToResource(this.userService.setLinkedinProfile(userId,linkedin));
     }
 
+    @PutMapping("user/teacher/{userId}/activate/")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Activate Teacher", description = "When a teacher register, he must be accepted by admin. When teacher is accepted then he can use the full app." +
+            "                                                Endpoint can only be accessed by admin.",
+            security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+    public ResponseEntity<?> activateTeacher(@PathVariable Long userId){
+        return this.userService.activateTeacher(userId);
+    }
+
     @PutMapping("user/teacher/{userId}/addCourses/")
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Add Courses", description = "Allows teacher to indicate the list courses that he teaches. Only accessed by role Teacher",
+    @Operation(summary = "Add Courses", description = "Allows teacher to indicate the list courses that he teaches. Endpoint can only be accessed by role teacher and admin.",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
     public ResponseEntity<?> addCourses(@PathVariable Long userId, @RequestBody List<Long> coursesId){
         return this.userService.addCourses(userId,coursesId);
@@ -67,22 +76,24 @@ public class UserController {
 
     @PutMapping("user/teacher/{userId}/removeCourses/")
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Remove Courses", description = "Allows to remove a list courses. Only accessed by role Teacher",
+    @Operation(summary = "Remove Courses", description = "Allows to remove a list courses. Endpoint can only be accessed by role teacher and admin.",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
-    public UserResource removeCourses(@PathVariable Long userId, @RequestBody List<Long> coursesId){
-        return convertToResource(this.userService.removeCourses(userId,coursesId));
+    public ResponseEntity<?> removeCourses(@PathVariable Long userId, @RequestBody List<Long> coursesId){
+        return this.userService.removeCourses(userId,coursesId);
     }
 
     @GetMapping("/users/{userId}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get User By Id", description = "View User By Id", tags = {"User"})
+    @Operation(summary = "Get User By Id", description = "View User By Id. Endpoint can be accessed by any role.",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
     public UserResource getUserById(@PathVariable(name = "userId") Long userId){
         return convertToResource(userService.getUserById(userId));
     }
 
     @PutMapping("/users/{userId}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Put User", description = "Update User", tags = {"User"})
+    @Operation(summary = "Put User", description = "Update User. Endpoint can be accessed by any role.",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
     public UserResource updateUser(@PathVariable(name = "userId") Long userId,
                                    @Valid @RequestBody UserSaveResource resource){
         return convertToResource(userService.updateUser(userId, convertToEntity(resource)));
@@ -90,14 +101,16 @@ public class UserController {
 
     @DeleteMapping("/users/{userId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Delete User", description = "Delete User", tags = {"User"})
+    @Operation(summary = "Delete User", description = "Delete User. Endpoint can only be accessed by role admin.",
+               security = @SecurityRequirement(name = "bearerAuth"), tags = {"User"})
     public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long userId){
         return userService.deleteUser(userId);
     }
 
     @DeleteMapping("/users/{userId}/baned")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Ban User", description = "Admin can ban user", tags = {"User"})
+    @Operation(summary = "Ban User", description = "Admin can ban user",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
     public ResponseEntity<?> banUser(@PathVariable(name = "userId") Long userId){
         return userService.banUser(userId);
     }

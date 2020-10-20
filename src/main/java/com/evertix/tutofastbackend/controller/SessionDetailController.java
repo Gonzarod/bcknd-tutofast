@@ -34,7 +34,7 @@ public class SessionDetailController {
 
     @Autowired
     private SessionDetailService sessionDetailService;
-
+/*
     @GetMapping("/sessions/{sessionId}/sessionDetails")
     @Operation(summary = "Get All SessionDetails By Session", description = "Get All SessionDetails By Session", tags = {"SessionDetail"},
             parameters = {
@@ -82,6 +82,8 @@ public class SessionDetailController {
                                           @PathVariable(name = "sessionDetailId") Long sessionDetailId){
         return sessionDetailService.deleteSessionDetail(sessionId, teacherId, sessionDetailId);
     }
+
+ */
 
     private SessionDetail convertToEntity(SessionDetailSaveResource resource){return mapper.map(resource, SessionDetail.class);}
     private SessionDetailResource convertToResource(SessionDetail entity){return mapper.map(entity, SessionDetailResource.class);}

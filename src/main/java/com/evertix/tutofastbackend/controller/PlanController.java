@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,12 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "Plan", description = "API")
+@Tag(name = "Plan", description = "API is Ready")
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class PlanController {
+
     @Autowired
     private ModelMapper mapper;
 
@@ -39,7 +41,8 @@ public class PlanController {
     private PlanService planService;
 
     @GetMapping("/plans")
-    @Operation(summary = "Get All Plans", description = "Get Plans", tags = {"Plan"},
+    @Operation(summary = "Get All Plans", description = "Get all Plans. Endpoint is public.",
+            tags = {"Plan"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -62,25 +65,25 @@ public class PlanController {
     }
 
     @GetMapping("/plans/{planId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Get Plan by Id", description = "Get Plan by Id", tags = {"Plan"})
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get Plan by Id", description = "Get Plan by Id. Endpoint can be accessed by any role.",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public PlanResource getUserById(@PathVariable(name = "planId") Long planId){
         return convertToResource(planService.getPlanById(planId));
     }
 
-    //TODO
-    //Page<Plan> getPlansByRole(String role,Pageable pageable);
-
     @PostMapping("/plans")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Post Plan", description = "Create Plan", tags = {"Plan"})
+    @Operation(summary = "Post Plan", description = "Create Plan. Endpoint can only be accessed by admin role",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public PlanResource createPlan(@Valid @RequestBody PlanSaveResource resource){
         return convertToResource(planService.createPlan(convertToEntity(resource)));
     }
 
     @PutMapping("/plans/{planId}")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Put Plan", description = "Update User", tags = {"Plan"})
+    @Operation(summary = "Put Plan", description = "Update User. Endpoint can only be accessed by admin role",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public PlanResource updatePlan(@PathVariable(name = "planId") Long planId,
                                    @Valid @RequestBody PlanSaveResource resource){
         return convertToResource(planService.updatePlan(planId, convertToEntity(resource)));
@@ -88,7 +91,8 @@ public class PlanController {
 
     @DeleteMapping("/plans/{planId}")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Delete Plan", description = "Delete Plan", tags = {"Plan"})
+    @Operation(summary = "Delete Plan", description = "Delete Plan. Endpoint can only be accessed by admin role",
+               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public ResponseEntity<?> deletePlan(@PathVariable(name = "planId") Long planId){
         return planService.deletePlan(planId);
     }

@@ -19,10 +19,7 @@ public class SessionDetail extends AuditModel{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull(message = "State cannot be null")
-    @NotBlank(message = "State cannot be blank")
-    @Size(max = 80)
-    private String state;
+    private Boolean chosen;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "session_id", nullable = false)
@@ -35,4 +32,8 @@ public class SessionDetail extends AuditModel{
     @OnDelete(action = OnDeleteAction.CASCADE)
     //@JsonIgnore
     private User teacher;
+
+    public SessionDetail(Boolean chosen) {
+        this.chosen=chosen;
+    }
 }
