@@ -44,29 +44,27 @@ public class AuthenticationUnitTesting {
     }
 
     @Test
-    public void RightCredentials_LoginEndpointTest(){
+    public void RightCredentials_Login(){
 
         HttpHeaders headers = new HttpHeaders();
 
         LoginRequest loginRequest = new LoginRequest("jesus.student", "password");
 
-        HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
+        HttpEntity<?> request = new HttpEntity<>(loginRequest, headers);
 
-        //ResponseEntity<String> result = this.template.postForEntity(base, request, String.class);
         ResponseEntity<JwtResponse> responseEntity = template.postForEntity(base.toString()+"signin",request, JwtResponse.class);
 
-        //System.out.println(responseEntity.getBody().getUsername());
         Assert.assertEquals(responseEntity.getStatusCodeValue(),400,responseEntity.getStatusCodeValue());
         Assert.assertEquals(responseEntity.getBody().getUsername(),"jesus.student",responseEntity.getBody().getUsername());
     }
 
     @Test
-    public void BadCredentials_LoginEndpointTest(){
+    public void BadCredentials_Login(){
         HttpHeaders headers = new HttpHeaders();
 
         LoginRequest loginRequest = new LoginRequest("jesus.student", "password11");
 
-        HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
+        HttpEntity<?> request = new HttpEntity<>(loginRequest, headers);
 
         //ResponseEntity<String> result = this.template.postForEntity(base, request, String.class);
         ResponseEntity<MessageResponse> responseEntity = template.postForEntity(base.toString()+"signin",request,MessageResponse.class);
@@ -76,14 +74,14 @@ public class AuthenticationUnitTesting {
     }
 
     @Test
-    public void Successfully_SignUpEndpointTest(){
+    public void Successfully_SignUp(){
 
         HttpHeaders headers = new HttpHeaders();
 
         SignUpRequest signUpRequest = this.SetUpNewStudentUser("elkasike.student","password","elkasike@gmail.com","Kasike",
                 "Ramos","77332214","994093007", LocalDate.now(), "Montevideo");
 
-        HttpEntity<SignUpRequest> request = new HttpEntity<>(signUpRequest, headers);
+        HttpEntity<?> request = new HttpEntity<>(signUpRequest, headers);
 
         //ResponseEntity<String> result = this.template.postForEntity(base, request, String.class);
         ResponseEntity<UserResource> responseEntity = template.postForEntity(base.toString()+"signup",request,UserResource.class);
@@ -93,14 +91,14 @@ public class AuthenticationUnitTesting {
     }
 
     @Test
-    public void UserTakenFail_SignUpEndpointTest(){
+    public void UserTaken_FailSignUp(){
 
         HttpHeaders headers = new HttpHeaders();
 
         SignUpRequest signUpRequest = this.SetUpNewStudentUser("jesus.student","password","elkasike2@gmail.com","Kasike2",
                                                                 "Ramos2","77332212","994093002", LocalDate.now(), "Av Larco");
 
-        HttpEntity<SignUpRequest> request = new HttpEntity<>(signUpRequest, headers);
+        HttpEntity<?> request = new HttpEntity<>(signUpRequest, headers);
 
         //ResponseEntity<String> result = this.template.postForEntity(base, request, String.class);
         ResponseEntity<MessageResponse> responseEntity = template.postForEntity(base.toString()+"signup",request,MessageResponse.class);

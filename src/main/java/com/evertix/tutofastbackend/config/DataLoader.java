@@ -4,6 +4,7 @@ import com.evertix.tutofastbackend.model.*;
 import com.evertix.tutofastbackend.repository.*;
 import com.evertix.tutofastbackend.security.payload.request.SignUpRequest;
 import com.evertix.tutofastbackend.service.AuthenticationService;
+import com.evertix.tutofastbackend.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +21,18 @@ public class DataLoader {
     private AuthenticationService authenticationService;
     private UserRepository userRepository;
     private PlanRepository planRepository;
+    private SubscriptionService subscriptionService;
 
     @Autowired
     public DataLoader(RoleRepository roleRepository, CourseRepository courseRepository, AuthenticationService authenticationService,
-                      UserRepository userRepository, PlanRepository planRepository) {
+                      UserRepository userRepository, PlanRepository planRepository,SubscriptionService subscriptionService) {
 
         this.roleRepository = roleRepository;
         this.courseRepository = courseRepository;
         this.authenticationService=authenticationService;
         this.userRepository=userRepository;
         this.planRepository=planRepository;
+        this.subscriptionService=subscriptionService;
         LoadData();
     }
 
@@ -42,6 +45,7 @@ public class DataLoader {
         this.registerTeacher();
         this.setTeacherCourses();
         this.addPlans();
+        this.subscribeToPlan();
     }
 
     private void addPlans() {
@@ -126,6 +130,16 @@ public class DataLoader {
     }
 
 
+    void subscribeToPlan(){
+        Optional<Plan> plan = this.planRepository.findById((long) 1);
+        Optional<User> user = this.userRepository.findByUsername("jesus.student");
+
+        this.subscriptionService.subscribeToPlan(user.get().getId(),plan.get().getId());
+
+    }
+
+
 
 
 }
+

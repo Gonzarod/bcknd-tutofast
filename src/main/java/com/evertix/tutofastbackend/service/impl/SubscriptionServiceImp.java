@@ -46,15 +46,23 @@ public class SubscriptionServiceImp implements SubscriptionService {
 
     @Override
     public ResponseEntity<?> subscribeToPlan(Long userId, Long planId) {
-        User user = this.userRepository.findById(userId).
-                orElseThrow(() -> new ResourceNotFoundException("User with Id: " + userId + " not found"));
+        Optional<User> user = this.userRepository.findById(userId);
 
-        Plan plan = this.planRepository.findById(planId)
-                .orElseThrow(() -> new ResourceNotFoundException("Plan with id: " + planId + " not found"));
+        Optional<Plan> plan = this.planRepository.findById(planId);
 
         Optional<Role> role = this.roleRepository.findByName(ERole.ROLE_STUDENT);
+
+
+        boolean var=false;
+        for(Role roli: user.get().getRoles()){
+            if (roli.getName().equals(ERole.ROLE_STUDENT)){
+                var=true;
+            };
+        }
+
         //Check if user is student
-        if (user.getRoles().contains(role.orElse(null))) {
+        if (var) {
+
             //Check user has subscribe to any plan
             List<Subscription> userSubsHistory = this.subscriptionRepository.findAllByUserId(userId);
             if (userSubsHistory.size() > 0) {
@@ -64,8 +72,8 @@ public class SubscriptionServiceImp implements SubscriptionService {
                     }
                 }
             }
-            Subscription savedSubscription= this.subscribeUserToPlan(user,plan);
-            this.reloadHoursCredit(user,plan);
+            Subscription savedSubscription= this.subscribeUserToPlan(user.get(),plan.get());
+            this.reloadHoursCredit(user.get(),plan.get());
             return ResponseEntity.ok(savedSubscription);
         } else {
             return ResponseEntity.badRequest().body(new MessageResponse("Only student can subscribe to a plan"));

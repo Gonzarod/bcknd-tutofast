@@ -160,16 +160,11 @@ public class SessionController {
 
     @PostMapping("/sessions/sessionDetail/{sessionDetailId}")
     @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Get Session Detail", description = "It fetchs all user get",
+    @Operation(summary = "Choose Teacher", description = "This endpoint assigns a teacher to teach a session all user get",
             security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
     public ResponseEntity<?> acceptTeacher(@PathVariable Long sessionDetailId){
         return sessionService.acceptTeacher(sessionDetailId);
     }
-
-
-
-
-
 
 /*
     @GetMapping("/students/{studentId}/sessions")
