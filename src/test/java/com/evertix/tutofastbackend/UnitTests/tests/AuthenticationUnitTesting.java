@@ -1,6 +1,5 @@
 package com.evertix.tutofastbackend.UnitTests.tests;
 
-import com.evertix.tutofastbackend.TutofastBackendApplication;
 import com.evertix.tutofastbackend.resource.UserResource;
 import com.evertix.tutofastbackend.security.payload.request.LoginRequest;
 
@@ -10,33 +9,16 @@ import com.evertix.tutofastbackend.security.payload.response.MessageResponse;
 import org.junit.Before;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = TutofastBackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class AuthenticationUnitTesting {
-
-    @LocalServerPort
-    private int port;
-
-    private URL base;
-
-    @Autowired
-    private TestRestTemplate template;
+public class AuthenticationUnitTesting extends UnitTest {
 
     @Before
     public void setUp() throws Exception {
@@ -108,7 +90,6 @@ public class AuthenticationUnitTesting {
 
     }
 
-
     public SignUpRequest SetUpNewStudentUser(String username, String password, String email, String name,
                                              String lastName, String dni, String phone, LocalDate birthday,String address){
         Set<String> roles = new HashSet<>();
@@ -122,8 +103,20 @@ public class AuthenticationUnitTesting {
 
     }
 
+    @Override
+    public int getCurrentNumberOfElements() {
+        /*
+        this.token=getAuthenticationJWT("jose.admin","password");
+        Assert.assertNotNull("Authentication Failed",token);
+        System.out.println(token);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ParameterizedTypeReference<RestPageImpl<CourseResource>> responseType = new ParameterizedTypeReference<RestPageImpl<CourseResource>>() { };
+        ResponseEntity<RestPageImpl<CourseResource>> responseEntity = template.exchange("http://localhost:" + port + "/api/user, HttpMethod.GET,request,responseType);
+        */
+        //return (int) responseEntity.getBody().getTotalElements();
 
-
-
-
+        return 0;
+    }
 }

@@ -83,9 +83,13 @@ public class DataLoader {
         Course course1 = new Course("Spanish", "Spanish");
         Course course2 = new Course("History", "History");
         Course course3 = new Course("Arithmetics", "Arithmetics");
+        Course course4 = new Course("Geometry", "Geometry");
+        Course course5 = new Course("Geography", "Geography");
         courseList.add(course1);
         courseList.add(course2);
         courseList.add(course3);
+        courseList.add(course4);
+        courseList.add(course5);
         this.courseRepository.saveAll(courseList);
 
     }

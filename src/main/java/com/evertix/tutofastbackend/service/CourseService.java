@@ -12,7 +12,7 @@ public interface CourseService {
     Page<Course> getAllCourses(Pageable pageable);
     Course getCourseById(Long courseId);
     Page<Course> getCoursesByName(String courseName,Pageable pageable);
-    List<User> getAllTeachersOfOneCourse(Long courseId);
+
     Course createCourse(Course course);
     Course updateCourse(Long courseId, Course courseDetails);
     ResponseEntity<?> deleteCourse(Long courseId);

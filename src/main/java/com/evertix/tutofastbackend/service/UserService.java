@@ -10,6 +10,7 @@ import java.util.List;
 public interface UserService {
     Boolean userExistsByUsername(String username);
     Boolean userExistsByEmail(String email);
+    List<User> getAllTeachersOfOneCourse(Long courseId);
     User createUser(User user);
     User getUserById(Long userId);
     User updateUser(Long userId, User userDetails);

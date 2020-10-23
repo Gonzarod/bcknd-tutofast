@@ -1,40 +1,26 @@
 package com.evertix.tutofastbackend.UnitTests.tests;
 
-import com.evertix.tutofastbackend.TutofastBackendApplication;
+import com.evertix.tutofastbackend.exception.ExceptionResponse;
+import com.evertix.tutofastbackend.model.Plan;
+import com.evertix.tutofastbackend.resource.CourseSaveResource;
+import com.evertix.tutofastbackend.resource.PlanSaveResource;
 import com.evertix.tutofastbackend.util.RestPageImpl;
 import com.evertix.tutofastbackend.resource.CourseResource;
-import com.evertix.tutofastbackend.security.payload.request.LoginRequest;
-import com.evertix.tutofastbackend.security.payload.response.JwtResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = TutofastBackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class CourseUnitTesting {
-
-    private String token;
-
-    @LocalServerPort
-    private int port;
-
-    private URL base;
-
-    @Autowired
-    private TestRestTemplate template;
+public class CourseUnitTesting extends UnitTest {
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +32,7 @@ public class CourseUnitTesting {
 
         this.token=getAuthenticationJWT("jose.admin","password");
         Assert.assertNotNull("Authentication Failed",token);
-        System.out.println(token);
+        //System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -54,7 +40,7 @@ public class CourseUnitTesting {
         ResponseEntity<RestPageImpl<CourseResource>> responseEntity = template.exchange(base.toString(), HttpMethod.GET,request,responseType);
 
         Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-        Assert.assertEquals("Size is "+responseEntity.getBody().getTotalElements(),3,responseEntity.getBody().getTotalElements());
+        Assert.assertEquals("Size is "+responseEntity.getBody().getTotalElements(),5,responseEntity.getBody().getTotalElements());
 
     }
 
@@ -62,7 +48,7 @@ public class CourseUnitTesting {
     public void GetCourseById(){
         this.token=getAuthenticationJWT("jesus.student","password");
         Assert.assertNotNull("Authentication Failed",token);
-        System.out.println(token);
+        //System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -72,43 +58,45 @@ public class CourseUnitTesting {
 
         Assert.assertEquals("Course name is "+responseEntity.getBody().getName(),"Spanish",responseEntity.getBody().getName());
     }
-/*
-    @Test
-    public void GetCourseByName(){
-        this.token=getAuthenticationJWT("jesus.student","password");
-        Assert.assertNotNull("Authentication Failed",token);
-        System.out.println(token);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<CourseResource> responseEntity = template.exchange(base.toString()+"2", HttpMethod.GET,request,CourseResource.class);
-
-        Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-        Assert.assertEquals("Plan title is "+responseEntity.getBody().getName(),"Basic",responseEntity.getBody().getName());
-
-    }
-*/
-
-
-    /*
 
     @Test
-    public void GetPlanById_NotFound(){
+    public void GetCourseById_NotFound(){
         this.token=getAuthenticationJWT("jesus.student","password");
         Assert.assertNotNull("Authentication Failed",token);
-        System.out.println(token);
+        //System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
         ResponseEntity<ExceptionResponse> responseEntity = template.exchange(base.toString()+"50", HttpMethod.GET,request,ExceptionResponse.class);
 
         Assert.assertEquals("Error Code is: "+responseEntity.getBody().getErrorCode(),"NOT_FOUND",responseEntity.getBody().getErrorCode());
-        Assert.assertEquals("Error Message is "+responseEntity.getBody().getErrorMessage(),"Plan with Id: 50 not found",responseEntity.getBody().getErrorMessage());
+        Assert.assertEquals("Error Message is "+responseEntity.getBody().getErrorMessage(),"Course with Id: 50 not found",responseEntity.getBody().getErrorMessage());
 
     }
 
     @Test
-    public void createPlan(){
+    public void getAllCourseByName() {
+
+        this.token = getAuthenticationJWT("jose.admin", "password");
+        Assert.assertNotNull("Authentication Failed", token);
+        //System.out.println(token);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ParameterizedTypeReference<RestPageImpl<CourseResource>> responseType = new ParameterizedTypeReference<RestPageImpl<CourseResource>>() {
+        };
+        ResponseEntity<RestPageImpl<CourseResource>> responseEntity = template.exchange(base.toString() + "/name/geo", HttpMethod.GET, request, responseType);
+        List<CourseResource> coursesWithGeo = responseEntity.getBody().getContent();
+        Assert.assertEquals(responseEntity.getStatusCodeValue(), 200, responseEntity.getStatusCodeValue());
+        //System.out.println(coursesWithGeo.size());
+        for (CourseResource course : coursesWithGeo) {
+            //System.out.println(coursesWithGeo.getName());
+            Assert.assertTrue("Name is: "+course.getName(),course.getName().toLowerCase().contains("geo"));
+        }
+    }
+
+    @Test
+    public void createCourse(){
 
         this.token=getAuthenticationJWT("jose.admin","password");
         Assert.assertNotNull("Authentication Failed",token);
@@ -116,21 +104,19 @@ public class CourseUnitTesting {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
 
-        Plan plan = new Plan("TestPlan","Test","Test",
-                (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP));
+        CourseSaveResource course = new CourseSaveResource("Germany","Germany");
 
-        HttpEntity<?> request = new HttpEntity<>(plan, headers);
+        HttpEntity<?> request = new HttpEntity<>(course, headers);
 
-        ResponseEntity<Plan> responseEntity = template.postForEntity(base.toString(),request, Plan.class);
+        ResponseEntity<CourseResource> responseEntity = template.postForEntity(base.toString(),request, CourseResource.class);
 
         Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-        Assert.assertEquals("Plan title is "+responseEntity.getBody().getTitle(),"TestPlan",responseEntity.getBody().getTitle());
-
+        Assert.assertEquals("Course name is "+responseEntity.getBody().getName(),"Germany",responseEntity.getBody().getName());
 
     }
 
     @Test
-    public void updatePlan(){
+    public void updateCourse(){
 
         this.token=getAuthenticationJWT("jose.admin","password");
         Assert.assertNotNull("Authentication Failed",token);
@@ -138,21 +124,19 @@ public class CourseUnitTesting {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
 
-        PlanSaveResource plan = new PlanSaveResource("Free Free","7 day of trial","You are given 4 hours of free session. You can use them within the next 5 days.",
-                (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP));
+        CourseSaveResource course = new CourseSaveResource("Español","Español");
 
-        HttpEntity<?> request = new HttpEntity<>(plan, headers);
+        HttpEntity<?> request = new HttpEntity<>(course, headers);
 
-        ResponseEntity<Plan> responseEntity = template.exchange(base.toString()+"1",HttpMethod.PUT,request, Plan.class);
+        ResponseEntity<CourseResource> responseEntity = template.exchange(base.toString()+"2",HttpMethod.PUT,request, CourseResource.class);
 
         Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-        Assert.assertEquals("Plan new title is "+responseEntity.getBody().getTitle(),plan.getTitle(),responseEntity.getBody().getTitle());
-
+        Assert.assertEquals("Course new title is "+responseEntity.getBody().getName(),course.getName(),responseEntity.getBody().getName());
 
     }
 
     @Test
-    public void deletePlan(){
+    public void deleteCourse(){
 
         int beforeDeleteNumberElements=this.getCurrentNumberOfElements();
 
@@ -164,49 +148,29 @@ public class CourseUnitTesting {
 
         HttpEntity<?> request = new HttpEntity<>(headers);
 
-        ResponseEntity<?> responseEntity = template.exchange(base.toString()+"6",HttpMethod.DELETE,request, ResponseEntity.class);
+        ResponseEntity<?> responseEntity = template.exchange(base.toString()+"5",HttpMethod.DELETE,request, ResponseEntity.class);
 
         int afterDeleteNumberElements=this.getCurrentNumberOfElements();
         int difference=beforeDeleteNumberElements-afterDeleteNumberElements;
         Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
         Assert.assertEquals("Difference is "+difference,1,difference);
 
-
     }
-*/
-    String getAuthenticationJWT(String username,String password){
 
-        try{
-            HttpHeaders headers = new HttpHeaders();
-
-            LoginRequest loginRequest = new LoginRequest(username, password);
-
-            HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
-
-            ResponseEntity<JwtResponse> responseEntity = template.postForEntity("http://localhost:" + port + "/api/auth/signin",request, JwtResponse.class);
-
-            return responseEntity.getBody().getToken();
-
-        } catch (Exception e) {
-            return null;
-        }
-
-    }
-/*
-    int getCurrentNumberOfElements(){
-
+    @Override
+    public int getCurrentNumberOfElements() {
         this.token=getAuthenticationJWT("jose.admin","password");
         Assert.assertNotNull("Authentication Failed",token);
         System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ParameterizedTypeReference<RestPageImpl<PlanResource>> responseType = new ParameterizedTypeReference<RestPageImpl<PlanResource>>() { };
-        ResponseEntity<RestPageImpl<PlanResource>> responseEntity = template.exchange(base.toString(), HttpMethod.GET,request,responseType);
+        ParameterizedTypeReference<RestPageImpl<CourseResource>> responseType = new ParameterizedTypeReference<RestPageImpl<CourseResource>>() { };
+        ResponseEntity<RestPageImpl<CourseResource>> responseEntity = template.exchange(base.toString(), HttpMethod.GET,request,responseType);
 
         return (int) responseEntity.getBody().getTotalElements();
-
     }
-*/
+
+
 
 }

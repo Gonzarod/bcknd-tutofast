@@ -32,12 +32,6 @@ public class CourseServiceImpl implements CourseService {
         return this.courseRepository.findByNameContaining(courseName,pageable);
     }
 
-    @Override
-    public List<User> getAllTeachersOfOneCourse(Long courseId) {
-        return courseRepository.findById(courseId).map(course1 -> {
-            return course1.getTeachers();
-        }).orElseThrow(()-> new ResourceNotFoundException("Course not found"));
-    }
 
     @Override
     public Course createCourse(Course course) { return courseRepository.save(course); }

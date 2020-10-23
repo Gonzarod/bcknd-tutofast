@@ -1,8 +1,6 @@
 package com.evertix.tutofastbackend.UnitTests;
 
-import com.evertix.tutofastbackend.UnitTests.tests.AuthenticationUnitTesting;
-import com.evertix.tutofastbackend.UnitTests.tests.PlanUnitTesting;
-import com.evertix.tutofastbackend.UnitTests.tests.SessionUnitTesting;
+import com.evertix.tutofastbackend.UnitTests.tests.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -10,7 +8,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         AuthenticationUnitTesting.class,
         PlanUnitTesting.class,
-        SessionUnitTesting.class
+        SessionUnitTesting.class,
+        CourseUnitTesting.class,
+        UserUnitTesting.class
 })
 public class UnitTestingIntegration {
 }

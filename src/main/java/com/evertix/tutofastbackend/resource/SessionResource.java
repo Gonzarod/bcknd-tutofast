@@ -1,7 +1,5 @@
 package com.evertix.tutofastbackend.resource;
 
-import com.evertix.tutofastbackend.model.Course;
-import com.evertix.tutofastbackend.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +14,6 @@ public class SessionResource {
     private String status;
     private String topic;
     private String link;
-    private User student;
-    private Course course;
+    private StudentResource student;
+    private CourseResource course;
 }

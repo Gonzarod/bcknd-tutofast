@@ -3,20 +3,29 @@ package com.evertix.tutofastbackend.service.impl;
 import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
 import com.evertix.tutofastbackend.model.*;
 import com.evertix.tutofastbackend.repository.*;
+import com.evertix.tutofastbackend.resource.SessionResource;
+import com.evertix.tutofastbackend.resource.SessionSaveResource;
 import com.evertix.tutofastbackend.security.payload.response.MessageResponse;
 import com.evertix.tutofastbackend.service.SessionDetailService;
 import com.evertix.tutofastbackend.service.SessionService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SessionServiceImpl implements SessionService {
+
+    @Autowired
+    private ModelMapper mapper;
+
     @Autowired
     private SessionRepository sessionRepository;
 
@@ -39,7 +48,17 @@ public class SessionServiceImpl implements SessionService {
     private SessionDetailService sessionDetailService;
 
     @Override
-    public ResponseEntity<?> createSessionRequest(Long courseId, Long studentId, Session session) {
+    public Page<SessionResource> getAllSessions(Pageable pageable) {
+        Page<Session> sessionsPage = this.sessionRepository.findAll(pageable);
+        List<SessionResource> resources = sessionsPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
+        return new PageImpl<>(resources, pageable, sessionsPage.getTotalElements());
+    }
+
+    @Override
+    public ResponseEntity<?> createSessionRequest(Long courseId, Long studentId, SessionSaveResource sessionDetails) {
+
+        Session session=this.convertToEntity(sessionDetails);
+
         return userRepository.findById(studentId).map(user -> {
             if(user.getRoles().contains(this.roleRepository.findByName(ERole.ROLE_STUDENT).get())){
                 if(this.hasActiveSubscription(user.getId())){
@@ -49,7 +68,7 @@ public class SessionServiceImpl implements SessionService {
                             session.setCourse(course);
                             session.setStatus(EStatus.OPEN);
                             user.setCreditHours((short) (user.getCreditHours()-calculateHours(session.getEnd_at(),session.getStart_at())));
-                            return ResponseEntity.ok(sessionRepository.save(session));
+                            return ResponseEntity.ok(convertToResource(sessionRepository.save(session)));
                         }).orElseThrow(()-> new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
                     }else {
                         return ResponseEntity.badRequest().body(new MessageResponse("You dont have enough hours"));
@@ -66,23 +85,23 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Page<Session> getAllOpenSessionRequestsByStudentId(Long studentId,Pageable pageable) {
-        return this.sessionRepository.getAllByStudentIdAndStatusEquals(studentId,EStatus.OPEN,pageable);
+    public List<Session> getAllOpenSessionRequestsByStudentId(Long studentId) {
+        return this.sessionRepository.getAllByStudentIdAndStatusEquals(studentId,EStatus.OPEN);
     }
 
     @Override
-    public Page<Session> getAllClosedSessionRequestsByStudentId(Long studentId,Pageable pageable) {
-        return this.sessionRepository.getAllByStudentIdAndStatusEquals(studentId,EStatus.CLOSED,pageable);
+    public List<Session> getAllClosedSessionRequestsByStudentId(Long studentId) {
+        return this.sessionRepository.getAllByStudentIdAndStatusEquals(studentId,EStatus.CLOSED);
     }
 
     @Override
-    public Page<Session> getAllFinishedAndRatedSessionRequestsByStudentId(Long studentId,Pageable pageable) {
-        return this.sessionRepository.getAllByStudentIdAndStatusEquals(studentId,EStatus.FINISHED_AND_RATED,pageable);
+    public List<Session> getAllFinishedAndRatedSessionRequestsByStudentId(Long studentId) {
+        return this.sessionRepository.getAllByStudentIdAndStatusEquals(studentId,EStatus.FINISHED_AND_RATED);
     }
 
     @Override
-    public Page<Session> getAllFinishedAndNoRatedSessionRequestsByStudentId(Long studentId,Pageable pageable) {
-        return this.sessionRepository.getAllByStudentIdAndStatusEquals(studentId,EStatus.FINISHED_AND_NO_RATED,pageable);
+    public List<Session> getAllFinishedAndNoRatedSessionRequestsByStudentId(Long studentId) {
+        return this.sessionRepository.getAllByStudentIdAndStatusEquals(studentId,EStatus.FINISHED_AND_NO_RATED);
     }
 
     @Override
@@ -200,4 +219,7 @@ public class SessionServiceImpl implements SessionService {
             return false;
         }
     }
+
+    private Session convertToEntity(SessionSaveResource resource){return mapper.map(resource, Session.class);}
+    private SessionResource convertToResource(Session entity){return mapper.map(entity, SessionResource.class);}
 }

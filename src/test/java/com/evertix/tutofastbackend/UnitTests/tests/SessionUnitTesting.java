@@ -1,41 +1,24 @@
 package com.evertix.tutofastbackend.UnitTests.tests;
 
-import com.evertix.tutofastbackend.TutofastBackendApplication;
 import com.evertix.tutofastbackend.model.Session;
+import com.evertix.tutofastbackend.resource.PlanResource;
 import com.evertix.tutofastbackend.resource.SessionSaveResource;
-import com.evertix.tutofastbackend.security.payload.request.LoginRequest;
-import com.evertix.tutofastbackend.security.payload.response.JwtResponse;
+import com.evertix.tutofastbackend.util.RestPageImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 
 
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = TutofastBackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class SessionUnitTesting {
-
-    private String token;
-
-    @LocalServerPort
-    private int port;
-
-    private URL base;
-
-    @Autowired
-    private TestRestTemplate template;
+public class SessionUnitTesting extends UnitTest {
 
     @Before
     public void setUp() throws Exception {
@@ -66,37 +49,54 @@ public class SessionUnitTesting {
 
     }
 
-    String getAuthenticationJWT(String username,String password){
+    @Test
+    public void getStudentsOpenRequest(){
+        this.token=getAuthenticationJWT("jose.admin","password");
+        Assert.assertNotNull("Authentication Failed",token);
+        //System.out.println(token);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ParameterizedTypeReference<RestPageImpl<PlanResource>> responseType = new ParameterizedTypeReference<RestPageImpl<PlanResource>>() { };
+        ResponseEntity<RestPageImpl<PlanResource>> responseEntity = template.exchange(base.toString()+"student/2/closed", HttpMethod.GET,request,responseType);
 
-        try{
-            HttpHeaders headers = new HttpHeaders();
+        Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
+        Assert.assertEquals("Size is "+responseEntity.getBody().getTotalElements(),5,responseEntity.getBody().getTotalElements());
+    }
 
-            LoginRequest loginRequest = new LoginRequest(username, password);
-
-            HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
-
-            ResponseEntity<JwtResponse> responseEntity = template.postForEntity("http://localhost:" + port + "/api/auth/signin",request, JwtResponse.class);
-
-            return responseEntity.getBody().getToken();
-
-        } catch (Exception e) {
-            return null;
-        }
+    @Test
+    public void getStudentsClosedRequest(){
 
     }
-/*
-    int getCurrentNumberOfElements(){
 
+    @Test
+    public void getStudentsFinishedAndRatedRequest(){
+
+    }
+
+    @Test
+    public void getStudentsFinishedAndNonRatedRequest(){
+
+    }
+
+
+    @Override
+    public int getCurrentNumberOfElements() {
         this.token=getAuthenticationJWT("jose.admin","password");
         Assert.assertNotNull("Authentication Failed",token);
         System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ParameterizedTypeReference<RestPageImpl<PlanResource>> responseType = new ParameterizedTypeReference<RestPageImpl<PlanResource>>() { };
-        ResponseEntity<RestPageImpl<PlanResource>> responseEntity = template.exchange(base.toString(), HttpMethod.GET,request,responseType);
+        ParameterizedTypeReference<RestPageImpl<Session>> responseType = new ParameterizedTypeReference<RestPageImpl<Session>>() { };
+        ResponseEntity<RestPageImpl<Session>> responseEntity = template.exchange(base.toString(), HttpMethod.GET,request,responseType);
 
         return (int) responseEntity.getBody().getTotalElements();
+    }
+/*
+    int getCurrentNumberOfElements(){
+
+
 
     }*/
 

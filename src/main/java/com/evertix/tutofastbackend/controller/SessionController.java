@@ -1,11 +1,14 @@
 package com.evertix.tutofastbackend.controller;
 
+import com.evertix.tutofastbackend.model.Plan;
 import com.evertix.tutofastbackend.model.Session;
 import com.evertix.tutofastbackend.model.SessionDetail;
+import com.evertix.tutofastbackend.resource.PlanResource;
 import com.evertix.tutofastbackend.resource.SessionResource;
 import com.evertix.tutofastbackend.resource.SessionSaveResource;
 import com.evertix.tutofastbackend.service.SessionDetailService;
 import com.evertix.tutofastbackend.service.SessionService;
+import io.cucumber.java.eo.Se;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -33,14 +36,34 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class SessionController {
-    @Autowired
-    private ModelMapper mapper;
 
     @Autowired
     private SessionService sessionService;
 
     @Autowired
     private SessionDetailService sessionDetailService;
+
+    @GetMapping("/sessions")
+    @Operation(summary = "Get All Sessions", description = "Get all Sessions. Endpoint is public.",
+            tags = {"Sessions"},
+            parameters = {
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Page you want to retrieve (0..N)"
+                            , name = "page"
+                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Number of records per page."
+                            , name = "size"
+                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "20"))),
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Sorting criteria in the format: property(,asc|desc). "
+                            + "Default sort order is ascending. " + "Multiple sort criteria are supported."
+                            , name = "sort"
+                            , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
+            })
+    public Page<SessionResource> getAllSessions(@PageableDefault @Parameter(hidden = true) Pageable pageable){
+        return this.sessionService.getAllSessions(pageable);
+    }
 
     @PostMapping("/sessions/courses/{courseId}/students/{studentId}/request")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
@@ -49,75 +72,33 @@ public class SessionController {
     public ResponseEntity<?> createSessionRequest(@PathVariable(name = "courseId") Long courseId,
                                                 @PathVariable(name = "studentId") Long studentId,
                                                 @Valid @RequestBody SessionSaveResource resource){
-        return sessionService.createSessionRequest(courseId, studentId, convertToEntity(resource));
+        return sessionService.createSessionRequest(courseId, studentId, resource);
     }
 
     @GetMapping("/sessions/student/{studentId}/opens")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    @Operation(summary = "Get all students open session request", description = "It allows to fetch opens sessions request (sessions still with no teacher assigned). Endpoint can only be accessed by role student",
-            parameters = {
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Page you want to retrieve (0..N)"
-                            , name = "page"
-                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Number of records per page."
-                            , name = "size"
-                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "20"))),
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Sorting criteria in the format: property(,asc|desc). "
-                            + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-                            , name = "sort"
-                            , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
-    public Page<Session> getAllOpenSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId,@Parameter(hidden = true) Pageable pageable){
-        return sessionService.getAllOpenSessionRequestsByStudentId(studentId,pageable);
+    @Operation(summary = "Get all students open session request", description = "It allows to fetch opens sessions request (sessions still with no teacher assigned). Endpoint can only be accessed by role student"
+            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+    public List<Session> getAllOpenSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
+        return sessionService.getAllOpenSessionRequestsByStudentId(studentId);
     }
 
     @GetMapping("/sessions/student/{studentId}/closed")
     @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get all students closed session request", description = "It allows to fetch closed sessions request ("+
-                                                                                "classes with assigned teacher but without class being taught). Endpoint can only be accessed by role student",
-            parameters = {
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Page you want to retrieve (0..N)"
-                            , name = "page"
-                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Number of records per page."
-                            , name = "size"
-                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "20"))),
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Sorting criteria in the format: property(,asc|desc). "
-                            + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-                            , name = "sort"
-                            , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
-    public Page<Session> getAllClosedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId,@Parameter(hidden = true) Pageable pageable){
-        return sessionService.getAllClosedSessionRequestsByStudentId(studentId,pageable);
+                                                                                "classes with assigned teacher but without class being taught). Endpoint can only be accessed by role student"
+            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+    public List<Session> getAllClosedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
+        return sessionService.getAllClosedSessionRequestsByStudentId(studentId);
     }
 
     @GetMapping("/sessions/student/{studentId}/finishedRated")
     @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get all students finished and rated sessions", description = "It allows to fetch finished and rated sessions request ("+
-            "classes with assigned teacher but without class being taught). Endpoint can only be accessed by role student",
-            parameters = {
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Page you want to retrieve (0..N)"
-                            , name = "page"
-                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Number of records per page."
-                            , name = "size"
-                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "20"))),
-                    @Parameter(in = ParameterIn.QUERY
-                            , description = "Sorting criteria in the format: property(,asc|desc). "
-                            + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-                            , name = "sort"
-                            , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
-    public Page<Session> getAllFinishedAndRatedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId,@Parameter(hidden = true) Pageable pageable){
-        return sessionService.getAllFinishedAndRatedSessionRequestsByStudentId(studentId,pageable);
+            "classes with assigned teacher but without class being taught). Endpoint can only be accessed by role student"
+            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+    public List<Session> getAllFinishedAndRatedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
+        return sessionService.getAllFinishedAndRatedSessionRequestsByStudentId(studentId);
     }
 
     @GetMapping("/sessions/student/{studentId}/finishedNoRated")
@@ -138,8 +119,8 @@ public class SessionController {
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
             },security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
-    public Page<Session> getAllFinishedAndNoRatedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId,@Parameter(hidden = true) Pageable pageable){
-        return sessionService.getAllFinishedAndNoRatedSessionRequestsByStudentId(studentId,pageable);
+    public List<Session> getAllFinishedAndNoRatedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
+        return sessionService.getAllFinishedAndNoRatedSessionRequestsByStudentId(studentId);
     }
 
     @PostMapping("/sessions/sessionDetail//teacher/{teacherId}/apply")
@@ -264,6 +245,4 @@ public class SessionController {
 
  */
 
-    private Session convertToEntity(SessionSaveResource resource){return mapper.map(resource, Session.class);}
-    private SessionResource convertToResource(Session entity){return mapper.map(entity, SessionResource.class);}
 }

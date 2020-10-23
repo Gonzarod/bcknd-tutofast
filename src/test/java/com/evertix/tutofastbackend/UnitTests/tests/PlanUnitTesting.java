@@ -1,43 +1,21 @@
 package com.evertix.tutofastbackend.UnitTests.tests;
 
-import com.evertix.tutofastbackend.TutofastBackendApplication;
-import com.evertix.tutofastbackend.util.RestPageImpl;
 import com.evertix.tutofastbackend.exception.ExceptionResponse;
 import com.evertix.tutofastbackend.model.Plan;
 import com.evertix.tutofastbackend.resource.PlanResource;
 import com.evertix.tutofastbackend.resource.PlanSaveResource;
-import com.evertix.tutofastbackend.security.payload.request.LoginRequest;
-
-import com.evertix.tutofastbackend.security.payload.response.JwtResponse;
+import com.evertix.tutofastbackend.util.RestPageImpl;
 import org.junit.Before;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = TutofastBackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class PlanUnitTesting {
-
-    private String token;
-
-    @LocalServerPort
-    private int port;
-
-    private URL base;
-
-    @Autowired
-    private TestRestTemplate template;
+public class PlanUnitTesting extends UnitTest {
 
     @Before
     public void setUp() throws Exception {
@@ -49,7 +27,7 @@ public class PlanUnitTesting {
 
         this.token=getAuthenticationJWT("jose.admin","password");
         Assert.assertNotNull("Authentication Failed",token);
-        System.out.println(token);
+        //System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -65,7 +43,7 @@ public class PlanUnitTesting {
     public void GetPlanById(){
         this.token=getAuthenticationJWT("jesus.student","password");
         Assert.assertNotNull("Authentication Failed",token);
-        System.out.println(token);
+        //System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -80,7 +58,7 @@ public class PlanUnitTesting {
     public void GetPlanById_NotFound(){
         this.token=getAuthenticationJWT("jesus.student","password");
         Assert.assertNotNull("Authentication Failed",token);
-        System.out.println(token);
+        //System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -100,12 +78,14 @@ public class PlanUnitTesting {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
 
-        Plan plan = new Plan("TestPlan","Test","Test",
+        PlanSaveResource plan = new PlanSaveResource("TestPlan","Test","Test",
                 (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP));
+
+
 
         HttpEntity<?> request = new HttpEntity<>(plan, headers);
 
-        ResponseEntity<Plan> responseEntity = template.postForEntity(base.toString(),request, Plan.class);
+        ResponseEntity<PlanResource> responseEntity = template.postForEntity(base.toString(),request, PlanResource.class);
 
         Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
         Assert.assertEquals("Plan title is "+responseEntity.getBody().getTitle(),"TestPlan",responseEntity.getBody().getTitle());
@@ -158,30 +138,12 @@ public class PlanUnitTesting {
 
     }
 
-    String getAuthenticationJWT(String username,String password){
-
-        try{
-            HttpHeaders headers = new HttpHeaders();
-
-            LoginRequest loginRequest = new LoginRequest(username, password);
-
-            HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
-
-            ResponseEntity<JwtResponse> responseEntity = template.postForEntity("http://localhost:" + port + "/api/auth/signin",request, JwtResponse.class);
-
-            return responseEntity.getBody().getToken();
-
-        } catch (Exception e) {
-            return null;
-        }
-
-    }
-
-    int getCurrentNumberOfElements(){
+    @Override
+    public int getCurrentNumberOfElements(){
 
         this.token=getAuthenticationJWT("jose.admin","password");
         Assert.assertNotNull("Authentication Failed",token);
-        System.out.println(token);
+        //System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -191,9 +153,6 @@ public class PlanUnitTesting {
         return (int) responseEntity.getBody().getTotalElements();
 
     }
-
-
-
 
 }
 
