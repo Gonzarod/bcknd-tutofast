@@ -22,6 +22,12 @@ public class CourseServiceImpl implements CourseService {
     public Page<Course> getAllCourses(Pageable pageable) { return courseRepository.findAll(pageable); }
 
     @Override
+    public Course getCourseById(Long courseId) {
+        return this.courseRepository.findById(courseId).orElseThrow(()->
+                new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
+    }
+
+    @Override
     public Page<Course> getCoursesByName(String courseName, Pageable pageable) {
         return this.courseRepository.findByNameContaining(courseName,pageable);
     }

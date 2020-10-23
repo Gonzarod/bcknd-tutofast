@@ -1,4 +1,4 @@
-package com.evertix.tutofastbackend.UnitTests.util;
+package com.evertix.tutofastbackend.util;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

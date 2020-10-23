@@ -1,8 +1,8 @@
-package com.evertix.tutofastbackend.UnitTests;
+package com.evertix.tutofastbackend.UnitTests.tests;
 
 import com.evertix.tutofastbackend.TutofastBackendApplication;
-import com.evertix.tutofastbackend.UnitTests.util.RestPageImpl;
-//import com.evertix.tutofastbackend.exception.ExceptionResponse;
+import com.evertix.tutofastbackend.util.RestPageImpl;
+import com.evertix.tutofastbackend.exception.ExceptionResponse;
 import com.evertix.tutofastbackend.model.Plan;
 import com.evertix.tutofastbackend.resource.PlanResource;
 import com.evertix.tutofastbackend.resource.PlanSaveResource;
@@ -75,7 +75,7 @@ public class PlanUnitTesting {
         Assert.assertEquals("Plan title is "+responseEntity.getBody().getTitle(),"Basic",responseEntity.getBody().getTitle());
 
     }
-/*
+
     @Test
     public void GetPlanById_NotFound(){
         this.token=getAuthenticationJWT("jesus.student","password");
@@ -90,7 +90,7 @@ public class PlanUnitTesting {
         Assert.assertEquals("Error Message is "+responseEntity.getBody().getErrorMessage(),"Plan with Id: 50 not found",responseEntity.getBody().getErrorMessage());
 
     }
-*/
+
     @Test
     public void createPlan(){
 
@@ -158,7 +158,6 @@ public class PlanUnitTesting {
 
     }
 
-    
     String getAuthenticationJWT(String username,String password){
 
         try{

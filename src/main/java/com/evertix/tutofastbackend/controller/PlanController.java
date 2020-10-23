@@ -68,7 +68,7 @@ public class PlanController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get Plan by Id", description = "Get Plan by Id. Endpoint can be accessed by any role.",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
-    public PlanResource getUserById(@PathVariable(name = "planId") Long planId){
+    public PlanResource getPlanById(@PathVariable(name = "planId") Long planId){
         return convertToResource(planService.getPlanById(planId));
     }
 

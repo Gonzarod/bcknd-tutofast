@@ -66,7 +66,15 @@ public class CourseController {
         return new PageImpl<>(courses,pageable,coursePage.getTotalElements());
     }
 
-    @GetMapping("/courses/{name}")
+    @GetMapping("/courses/{courseId}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get Plan by Id", description = "Get Course by Id. Endpoint can be accessed by any role.",
+            security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
+    public CourseResource getCourseById(@PathVariable Long courseId){
+        return convertToResource(courseService.getCourseById(courseId));
+    }
+
+    @GetMapping("/courses/name/{name}")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Courses by Course Name", description = "Get All Courses by Course Name. Endpoint can be accessed by any role.", tags = {"Course"},
             parameters = {

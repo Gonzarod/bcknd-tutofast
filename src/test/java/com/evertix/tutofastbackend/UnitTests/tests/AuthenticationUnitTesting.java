@@ -1,4 +1,4 @@
-package com.evertix.tutofastbackend.UnitTests;
+package com.evertix.tutofastbackend.UnitTests.tests;
 
 import com.evertix.tutofastbackend.TutofastBackendApplication;
 import com.evertix.tutofastbackend.resource.UserResource;
