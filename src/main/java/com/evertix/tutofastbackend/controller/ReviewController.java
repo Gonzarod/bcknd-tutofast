@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,15 +33,14 @@ import java.util.stream.Collectors;
 @Tag(name = "Review", description = "API")
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class ReviewController {
-    @Autowired
-    private ModelMapper mapper;
 
     @Autowired
     ReviewService reviewService;
 
     @GetMapping("/reviews")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Reviews", description = "Get All Review", tags = {"Review"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
@@ -55,40 +56,40 @@ public class ReviewController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            })
+            },security = @SecurityRequirement(name = "bearerAuth"))
     public Page<ReviewResource> getAllReviews(@PageableDefault @Parameter(hidden = true) Pageable pageable){
-        Page<Review> reviewPage = reviewService.getAllReview(pageable);
-        List<ReviewResource> resources = reviewPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,reviewPage.getTotalElements());
+        return this.reviewService.getAllReview(pageable);
     }
 
+
     @GetMapping("reviews/teacher/{teacherId}")
-    @Operation(summary = "Get Reviews By User Id", description = "Get Reviews By Teacher Id", tags = {"Review"})
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get Reviews By User Id", description = "Get Reviews By Teacher Id", tags = {"Review"},security = @SecurityRequirement(name = "bearerAuth"))
     public Page<ReviewResource> getAllTeachersReviews(@PathVariable(name = "teacherId") Long teacherId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
-        Page<Review> reviewPage = reviewService.getReviewsByTeacher(teacherId, pageable);
-        List<ReviewResource> resources = reviewPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,resources.size());
+        return this.reviewService.getReviewsByTeacher(teacherId, pageable);
     }
 
     @PostMapping("/reviews/student/{studentId}/teacher/{teacherId}")
-    @Operation(summary = "Create To Review", description = "Student creates a Review of a Teacher", tags = {"Review"})
-    public ReviewResource subscribeToPlan(@PathVariable(name = "studentId") Long studentId,@PathVariable(name = "teacherId") Long teacherId,@Valid @RequestBody ReviewSaveResource resource){
-        return convertToResource(reviewService.createReview(studentId,teacherId,convertToEntity(resource)));
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Create To Review", description = "Student creates a Review of a Teacher", tags = {"Review"},security = @SecurityRequirement(name = "bearerAuth"))
+    public ReviewResource createReview(@PathVariable(name = "studentId") Long studentId,@PathVariable(name = "teacherId") Long teacherId,@Valid @RequestBody ReviewSaveResource resource){
+        return this.reviewService.createReview(studentId, teacherId, resource);
     }
 
     @PutMapping("/reviews/{reviewId}")
-    @Operation(summary = "Create To Review", description = "Student creates a Review of a Teacher", tags = {"Review"})
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Create To Review", description = "Student creates a Review of a Teacher", tags = {"Review"},security = @SecurityRequirement(name = "bearerAuth"))
     public ReviewResource updateReviewDetails(@PathVariable(name = "reviewId") Long reviewId,@Valid @RequestBody ReviewSaveResource resource){
-        return convertToResource(reviewService.updateReview(reviewId,convertToEntity(resource)));
+        return this.reviewService.updateReview(reviewId, resource);
     }
 
     @DeleteMapping("/reviews/{reviewId}")
-    @Operation(summary = "Delete Review", description = "Student delete Review", tags = {"Review"})
-    public ResponseEntity<?> updateReview(@PathVariable(name = "reviewId") Long reviewId){
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Delete Review", description = "Student delete Review", tags = {"Review"},security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<?> deleteReview(@PathVariable(name = "reviewId") Long reviewId){
         return reviewService.deleteReview(reviewId);
     }
 
 
-    private Review convertToEntity(ReviewSaveResource resource) {return mapper.map(resource,Review.class);}
-    private ReviewResource convertToResource(Review entity){return mapper.map(entity, ReviewResource.class);}
+
 }

@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 
-public class PlanUnitTesting extends UnitTest {
+public class PlanUnitTesting extends TutofastUnitTest {
 
     @Before
     public void setUp() throws Exception {
@@ -79,7 +79,7 @@ public class PlanUnitTesting extends UnitTest {
         headers.setBearerAuth(token);
 
         PlanSaveResource plan = new PlanSaveResource("TestPlan","Test","Test",
-                (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP));
+                (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP),false);
 
 
 
@@ -103,7 +103,7 @@ public class PlanUnitTesting extends UnitTest {
         headers.setBearerAuth(token);
 
         PlanSaveResource plan = new PlanSaveResource("Free Free","7 day of trial","You are given 4 hours of free session. You can use them within the next 5 days.",
-                (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP));
+                (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP),false);
 
         HttpEntity<?> request = new HttpEntity<>(plan, headers);
 

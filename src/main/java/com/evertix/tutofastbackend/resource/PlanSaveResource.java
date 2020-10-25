@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
@@ -40,4 +37,6 @@ public class PlanSaveResource {
     @DecimalMin(value = "0.00")
     @Digits(integer = 6, fraction = 2)
     private BigDecimal price;
+
+    private Boolean available;
 }

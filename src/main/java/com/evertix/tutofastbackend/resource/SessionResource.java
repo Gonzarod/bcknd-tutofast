@@ -1,5 +1,6 @@
 package com.evertix.tutofastbackend.resource;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,9 @@ import java.util.Date;
 @Setter
 public class SessionResource {
     private Long id;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date start_at;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date end_at;
     private String status;
     private String topic;

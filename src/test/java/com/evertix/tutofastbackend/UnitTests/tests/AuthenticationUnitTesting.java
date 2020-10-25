@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AuthenticationUnitTesting extends UnitTest {
+public class AuthenticationUnitTesting extends TutofastUnitTest {
 
     @Before
     public void setUp() throws Exception {

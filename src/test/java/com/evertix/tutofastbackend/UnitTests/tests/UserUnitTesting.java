@@ -1,10 +1,18 @@
 package com.evertix.tutofastbackend.UnitTests.tests;
 
-public class UserUnitTesting extends UnitTest {
+import org.junit.Assert;
+import org.junit.Test;
+
+public class UserUnitTesting extends TutofastUnitTest {
 
     @Override
     public int getCurrentNumberOfElements() {
         return 0;
+    }
+
+    @Test
+    public void getUsers(){
+        Assert.assertTrue(true);
     }
 
 /*

@@ -10,7 +10,10 @@ import org.junit.runners.Suite;
         PlanUnitTesting.class,
         SessionUnitTesting.class,
         CourseUnitTesting.class,
-        UserUnitTesting.class
+        UserUnitTesting.class,
+        ComplaintUnitTesting.class,
+        ReviewUnitTesting.class
+
 })
 public class UnitTestingIntegration {
 }
