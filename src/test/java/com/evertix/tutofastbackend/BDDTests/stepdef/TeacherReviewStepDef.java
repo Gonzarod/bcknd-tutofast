@@ -131,7 +131,7 @@ public class TeacherReviewStepDef extends TutofastStepDef {
 
     @And("all his reviews are listed")
     public void allHisReviewsAreListed() {
-        Assert.assertEquals("*************Size is "+listresponseEntity.getBody().getTotalElements(),1,listresponseEntity.getBody().getTotalElements());
+        Assert.assertEquals("*************Size is "+listresponseEntity.getBody().getTotalElements(),3,listresponseEntity.getBody().getTotalElements());
     }
 
     @Then("review list response status is {int}")
