@@ -90,7 +90,7 @@ public class UserController {
         return convertToResource(userService.getUserById(userId));
     }
 
-    @GetMapping("/users/{username}")
+    @GetMapping("/users/username/{username}")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get User By Id", description = "View User By Id. Endpoint can be accessed by any role.",
             security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})

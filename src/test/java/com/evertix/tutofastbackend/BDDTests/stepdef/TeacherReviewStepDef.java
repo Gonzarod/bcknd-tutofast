@@ -3,6 +3,7 @@ package com.evertix.tutofastbackend.BDDTests.stepdef;
 import com.evertix.tutofastbackend.resource.ReviewResource;
 import com.evertix.tutofastbackend.resource.ReviewSaveResource;
 import com.evertix.tutofastbackend.resource.UserResource;
+import com.evertix.tutofastbackend.util.RestPageImpl;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -23,6 +24,7 @@ public class TeacherReviewStepDef extends TutofastStepDef {
 
     ReviewSaveResource resource;
     private ResponseEntity<ReviewResource> responseEntity;
+    private ResponseEntity<RestPageImpl<ReviewResource>> listresponseEntity;
     //private ResponseEntity<MessageResponse> messageResponse;
     private String studentUsername;
     private Long studentId;
@@ -30,26 +32,26 @@ public class TeacherReviewStepDef extends TutofastStepDef {
     private Long teacherId;
     @Before
     public void setUp() throws MalformedURLException {
-        this.base=new URL( "http://localhost:" + port + "/api/auth/reviews");
+        this.base=new URL( "http://localhost:" + port + "/api/reviews");
         this.resource= new ReviewSaveResource();
 
     }
 
 
     @Given("Student with a username {string} is authenticated")
-    public void studentWithAUsername(String student) {
-        this.studentUsername=student;
+    public void studentWithAUsername(String studentUsername) {
+        this.studentUsername=studentUsername;
         this.token=authenticate(studentUsername,"password");
         Assert.assertNotNull("Authentication Failed",token);
         //System.out.println(token);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ParameterizedTypeReference<UserResource> responseType = new ParameterizedTypeReference<UserResource>() { };
-        ResponseEntity<UserResource> responseEntity = template.exchange("http://localhost:" + port + "/api/users/"+studentUsername, HttpMethod.GET,request,responseType);
-
-        Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-        this.studentId=responseEntity.getBody().getId();
+        ResponseEntity<UserResource> studentResponseEntity = template.exchange("http://localhost:" + port + "/api/users/username/"+studentUsername, HttpMethod.GET,request,UserResource.class);
+        this.studentId=studentResponseEntity.getBody().getId();
+        System.out.println(studentResponseEntity.getBody().getId()+"<<<<<<<<<<<<</*****************************************");
+        System.out.println(studentResponseEntity.getBody().getEmail()+"<<<<<<<<<<<<</*****************************************");
+        Assert.assertEquals(studentResponseEntity.getStatusCodeValue(),200,studentResponseEntity.getStatusCodeValue());
 
     }
 
@@ -59,9 +61,10 @@ public class TeacherReviewStepDef extends TutofastStepDef {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ParameterizedTypeReference<UserResource> responseType = new ParameterizedTypeReference<UserResource>() { };
-        ResponseEntity<UserResource> responseEntity = template.exchange("http://localhost:" + port + "/api/users/"+teacherUsername, HttpMethod.GET,request,responseType);
-        this.teacherId=responseEntity.getBody().getId();
+        ResponseEntity<UserResource> teacherResponseEntity = template.exchange("http://localhost:" + port + "/api/users/username/"+teacherUsername, HttpMethod.GET,request,UserResource.class);
+        this.teacherId=teacherResponseEntity.getBody().getId();
+        System.out.println("Teacher ID is "+teacherId);
+        Assert.assertEquals(teacherResponseEntity.getStatusCodeValue(),200,teacherResponseEntity.getStatusCodeValue());
     }
 
     @When("student fills review form with {int} stars")
@@ -77,15 +80,12 @@ public class TeacherReviewStepDef extends TutofastStepDef {
     @And("click on save review")
     public void clickOnSaveReview() {
 
-
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<?> request = new HttpEntity<>(resource, headers);
 
         this.responseEntity = template.postForEntity(base.toString()+"/student/"+studentId+"/teacher/"+teacherId,request, ReviewResource.class);
-
-        Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-
+        System.out.println(base.toString()+"/student/"+studentId+"/teacher/"+teacherId);
     }
 
     @And("review is created")
@@ -98,5 +98,44 @@ public class TeacherReviewStepDef extends TutofastStepDef {
     @Then("review response status is {int}")
     public void reviewResponseStatusIs(int status) {
         Assert.assertEquals(this.responseEntity.getStatusCodeValue(),status,responseEntity.getStatusCodeValue());
+    }
+
+    @Given("Teacher with a username {string} is authenticated")
+    public void teacherWithAUsernameIsAuthenticated(String teacherUsername) {
+        this.teacherUsername=teacherUsername;
+        this.token=authenticate(teacherUsername,"password");
+
+        Assert.assertNotNull("Authentication Failed",token);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<UserResource> teacherResponseEntity = template.exchange("http://localhost:" + port + "/api/users/username/"+teacherUsername, HttpMethod.GET,request,UserResource.class);
+        this.teacherId=teacherResponseEntity.getBody().getId();
+
+
+    }
+
+    @When("clicks on his reviews")
+    public void clicksOnHisReviews() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ParameterizedTypeReference<RestPageImpl<ReviewResource>> responseType = new ParameterizedTypeReference<RestPageImpl<ReviewResource>>() { };
+        this.listresponseEntity = template.exchange(base.toString()+"/teacher/"+teacherId, HttpMethod.GET,request,responseType);
+
+
+
+
+    }
+
+    @And("all his reviews are listed")
+    public void allHisReviewsAreListed() {
+        Assert.assertEquals("*************Size is "+listresponseEntity.getBody().getTotalElements(),1,listresponseEntity.getBody().getTotalElements());
+    }
+
+    @Then("review list response status is {int}")
+    public void reviewListResponseStatusIs(int arg0) {
+        Assert.assertEquals(listresponseEntity.getStatusCodeValue(),200,listresponseEntity.getStatusCodeValue());
     }
 }
