@@ -20,6 +20,7 @@ import java.util.Set;
 
 public class AuthenticationUnitTesting extends TutofastUnitTest {
 
+
     @Before
     public void setUp() throws Exception {
         this.base = new URL("http://localhost:" + port + "/api/auth/");

@@ -51,7 +51,6 @@ public class UserSaveResource {
     @Size(max = 10, min = 8)
     private String dni;
 
-    @Column(unique = true)
     @NotNull(message = "Phone cannot be null")
     @NotBlank(message = "Phone cannot be blank")
     @Size(max = 12, min = 9)

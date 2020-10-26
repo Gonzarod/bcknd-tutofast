@@ -1,9 +1,6 @@
 package com.evertix.tutofastbackend.UnitTests.tests;
 
-import com.evertix.tutofastbackend.exception.ExceptionResponse;
-import com.evertix.tutofastbackend.model.Plan;
 import com.evertix.tutofastbackend.resource.PlanResource;
-import com.evertix.tutofastbackend.resource.PlanSaveResource;
 import com.evertix.tutofastbackend.resource.ReviewResource;
 import com.evertix.tutofastbackend.resource.ReviewSaveResource;
 import com.evertix.tutofastbackend.util.RestPageImpl;
@@ -79,14 +76,14 @@ public class ReviewUnitTesting extends TutofastUnitTest {
         ResponseEntity<ReviewResource> responseEntity = template.postForEntity(base.toString()+"student/2/teacher/3",request, ReviewResource.class);
 
         Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-        Assert.assertEquals("Review title is "+responseEntity.getBody().getDescription(),"Good technique",responseEntity.getBody().getDescription());
+        Assert.assertEquals("Review desc is "+responseEntity.getBody().getDescription(),"Good technique",responseEntity.getBody().getDescription());
 
 
     }
 
 
     @Test
-    public void deletePlan(){
+    public void deleteReview(){
 
         int beforeDeleteNumberElements=this.getCurrentNumberOfElements();
 

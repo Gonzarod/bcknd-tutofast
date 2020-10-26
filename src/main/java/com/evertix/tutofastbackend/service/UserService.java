@@ -23,4 +23,6 @@ public interface UserService {
     ResponseEntity<?> banUser(Long userId);
 
     ResponseEntity<?> activateTeacher(Long userId);
+
+    User getUserByUsername(String username);
 }

@@ -13,7 +13,6 @@ import org.junit.runners.Suite;
         UserUnitTesting.class,
         ComplaintUnitTesting.class,
         ReviewUnitTesting.class
-
 })
 public class UnitTestingIntegration {
 }
