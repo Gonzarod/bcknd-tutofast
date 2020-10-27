@@ -33,7 +33,7 @@ public class PlanController {
 
     @GetMapping("/plans")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Get All Plans", description = "Get all Plans. Endpoint can be accessed by role admin.",
+    @Operation(summary = "Get All Plans", description = "Get all plans. Endpoint can be accessed by role admin.",
             tags = {"Plan"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
@@ -49,13 +49,13 @@ public class PlanController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            })
+            },security = @SecurityRequirement(name = "bearerAuth"))
     public Page<PlanResource> getAllPlans(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.planService.getAllPlans(pageable);
     }
 
     @GetMapping("/plans/available")
-    @Operation(summary = "Get All Available Plans", description = "Get all Plans. Endpoint is public.",
+    @Operation(summary = "Get All Available Plans", description = "Get all available Plans. Endpoint is public.",
             tags = {"Plan"})
     public List<PlanResource> getAvailablePlans(){
         return this.planService.getAvailablePlans();
