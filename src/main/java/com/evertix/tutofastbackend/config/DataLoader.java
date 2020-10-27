@@ -16,17 +16,18 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Component
-public class    DataLoader {
+public class DataLoader {
 
-    private RoleRepository roleRepository;
-    private CourseRepository courseRepository;
-    private AuthenticationService authenticationService;
-    private UserRepository userRepository;
-    private PlanRepository planRepository;
-    private SubscriptionService subscriptionService;
-    private ComplaintRepository complaintRepository;
-    private ReviewRepository reviewRepository;
-    private SessionService sessionService;
+    private final RoleRepository roleRepository;
+    private final CourseRepository courseRepository;
+    private final AuthenticationService authenticationService;
+    private final UserRepository userRepository;
+    private final PlanRepository planRepository;
+    private final SubscriptionService subscriptionService;
+    private final ComplaintRepository complaintRepository;
+    private final ReviewRepository reviewRepository;
+    private final SessionService sessionService;
+
     @Autowired
     public DataLoader(RoleRepository roleRepository, CourseRepository courseRepository, AuthenticationService authenticationService,
                       UserRepository userRepository, PlanRepository planRepository, ComplaintRepository complaintRepository, SubscriptionService subscriptionService,
@@ -41,10 +42,10 @@ public class    DataLoader {
         this.complaintRepository=complaintRepository;
         this.reviewRepository=reviewRepository;
         this.sessionService=sessionService;
-        LoadData();
+        loadData();
     }
 
-    private void LoadData() {
+    private void loadData() {
 
         this.addRoles();
         this.addCourses();
@@ -80,7 +81,7 @@ public class    DataLoader {
     }
 
     void addRoles(){
-        List<Role> roles = new ArrayList<Role>();
+        List<Role> roles = new ArrayList<>();
         roles.add(new Role(ERole.ROLE_STUDENT));
         roles.add(new Role(ERole.ROLE_TEACHER));
         roles.add(new Role(ERole.ROLE_ADMIN));
@@ -89,7 +90,7 @@ public class    DataLoader {
     }
 
     void addCourses(){
-        List<Course> courseList = new ArrayList<Course>();
+        List<Course> courseList = new ArrayList<>();
 
         //Course 1
         Course course1 = new Course("Spanish", "Spanish");
@@ -141,30 +142,36 @@ public class    DataLoader {
     void setTeacherCourses(){
         List<Course> courses = courseRepository.findAll();
         Optional<User> user = this.userRepository.findByUsername("albert.teacher");
-        user.get().setCourses(courses);
-        this.userRepository.save(user.get());
+        user.ifPresent(value -> {
+            value.setCourses(courses);
+            this.userRepository.save(value);
+        });
     }
 
 
     void subscribeToPlan(){
 
-        Optional<Plan> plan = this.planRepository.findById((long) 1);
+        Optional<Plan> plan = this.planRepository.findByTitle("Free");
         Optional<User> user = this.userRepository.findByUsername("jesus.student");
 
-        this.subscriptionService.subscribeToPlan(user.get().getId(),plan.get().getId());
+        plan.ifPresent(plan1 -> user.ifPresent(user1 -> this.subscriptionService.subscribeToPlan(plan1.getId(),user1.getId())));
+
+
 
     }
 
     void addComplaint(){
 
-        Optional<User> student = this.userRepository.findById((long)2);
-        Optional<User> teacher = this.userRepository.findById((long)3);
+        Optional<User> student = this.userRepository.findByUsername("jesus.student");
+        Optional<User> teacher = this.userRepository.findByUsername("albert.teacher");
 
         Complaint complaint = new Complaint();
         complaint.setReason("Teacher didnt attend to class");
         complaint.setDescription("Teacher Albert didnt attend to class");
-        complaint.setMadeBy(student.get());
-        complaint.setReported(teacher.get());
+        student.ifPresent(student1-> teacher.ifPresent(teacher1->{
+            complaint.setMadeBy(student1);
+            complaint.setReported(teacher1);
+        }));
 
         this.complaintRepository.save(complaint);
 
@@ -172,14 +179,16 @@ public class    DataLoader {
 
     void addReview(){
 
-        Optional<User> student = this.userRepository.findById((long)2);
-        Optional<User> teacher = this.userRepository.findById((long)3);
+        Optional<User> student = this.userRepository.findByUsername("jesus.student");
+        Optional<User> teacher = this.userRepository.findByUsername("albert.teacher");
 
         Review review = new Review();
         review.setDescription("Really good teacher");
         review.setStars((short) 5);
-        review.setStudent(student.get());
-        review.setTeacher(teacher.get());
+        student.ifPresent(student1-> teacher.ifPresent(teacher1->{
+            review.setStudent(student1);
+            review.setTeacher(teacher1);
+        }));
 
         this.reviewRepository.save(review);
 
@@ -187,10 +196,14 @@ public class    DataLoader {
 
     void createSessionRequest(){
 
+        Optional<User> student = this.userRepository.findByUsername("jesus.student");
+        Optional<Course> course = this.courseRepository.findByName("Spanish");
         SessionSaveResource sessionSaveResource=new SessionSaveResource(new Date(2020, Calendar.OCTOBER,22,17,0),
                 new Date(2020, Calendar.OCTOBER,22,19,0),
                 "Segunda Guerra Mundial");
-        this.sessionService.createSessionRequest((long) 3,(long) 2, sessionSaveResource);
+
+        student.ifPresent(student1-> course.ifPresent(course1 -> this.sessionService.createSessionRequest(student1.getId(),course1.getId(), sessionSaveResource)));
+
     }
 
 
