@@ -40,6 +40,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAllTeachersOfOneCourse(Long courseId) {
+        return courseRepository.findById(courseId).map(course1 -> {
+            return course1.getTeachers();
+        }).orElseThrow(()-> new ResourceNotFoundException("Course not found"));
+    }
+
+    @Override
     public User createUser(User user) {
         return this.userRepository.save(user);
     }
@@ -143,6 +150,11 @@ public class UserServiceImpl implements UserService {
                     }
                 })
         );
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return this.userRepository.findByUsername(username).orElseThrow(()->new ResourceNotFoundException("User not found"));
     }
 
 }

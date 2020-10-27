@@ -54,6 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //Ignore Swagger UI
         web.ignoring().antMatchers("/v3/api-docs/**",
                 "/configuration/ui",
+                "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/configuration/security",
                 "/swagger-ui.html",
@@ -66,7 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()//TODO :MODIFICAR !!!!!!!
                 .antMatchers("/api/user/**").permitAll()
@@ -74,6 +74,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/plans/**").permitAll()
                 .antMatchers("/api/subscriptions/**").permitAll()
                 .antMatchers("/api/sessions/**").permitAll()
+                .antMatchers("/api/complaints/**").permitAll()
+                .antMatchers("/api/reviews/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

@@ -90,6 +90,14 @@ public class UserController {
         return convertToResource(userService.getUserById(userId));
     }
 
+    @GetMapping("/users/username/{username}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get User By Id", description = "View User By Id. Endpoint can be accessed by any role.",
+            security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+    public UserResource getUserByUsername(@PathVariable String username){
+        return convertToResource(userService.getUserByUsername(username));
+    }
+
     @PutMapping("/users/{userId}")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Put User", description = "Update User. Endpoint can be accessed by any role.",
@@ -105,6 +113,29 @@ public class UserController {
                security = @SecurityRequirement(name = "bearerAuth"), tags = {"User"})
     public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long userId){
         return userService.deleteUser(userId);
+    }
+
+    @GetMapping("/courses/{courseId}/teachers")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get All Course Teachers", description = "Get All the teachers that teach an specific course. Endpoint can be accessed by any role.", tags = {"Course"},
+            parameters = {
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Page you want to retrieve (0..N)"
+                            , name = "page"
+                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Number of records per page."
+                            , name = "size"
+                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "20"))),
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Sorting criteria in the format: property(,asc|desc). "
+                            + "Default sort order is ascending. " + "Multiple sort criteria are supported."
+                            , name = "sort"
+                            , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
+            },security = @SecurityRequirement(name = "bearerAuth"))
+    public Page<UserResource> getAllTeachersOfOneCourse(@PathVariable Long courseId,@PageableDefault @Parameter(hidden = true) Pageable pageable){
+        List<UserResource> userList = this.userService.getAllTeachersOfOneCourse(courseId).stream().map(user -> mapper.map(user,UserResource.class)).collect(Collectors.toList());
+        return new PageImpl<>(userList, pageable, userList.size());
     }
 
     @DeleteMapping("/users/{userId}/baned")

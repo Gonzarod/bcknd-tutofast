@@ -60,7 +60,7 @@ public class User extends AuditModel{
     @Size(max = 100)
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -82,7 +82,6 @@ public class User extends AuditModel{
     @Size(max = 10, min = 8)
     private String dni;
 
-    @Column(unique = true)
     @NotNull(message = "Phone cannot be null")
     @NotBlank(message = "Phone cannot be blank")
     @Size(max = 12, min = 9)
@@ -115,6 +114,6 @@ public class User extends AuditModel{
     //Additional attribute for Teacher User
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "assignations",
-            joinColumns = {@JoinColumn(name = "teacher_id")}, inverseJoinColumns = {@JoinColumn(name = "course_id")})
+               joinColumns = {@JoinColumn(name = "teacher_id")}, inverseJoinColumns = {@JoinColumn(name = "course_id")})
     private List<Course> courses;
 }

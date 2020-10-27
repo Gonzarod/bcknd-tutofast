@@ -1,12 +1,16 @@
 package com.evertix.tutofastbackend.resource;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class CourseSaveResource {
@@ -19,4 +23,5 @@ public class CourseSaveResource {
     @NotBlank(message = "Description cannot be blank")
     @Size(max = 250)
     private String description;
+
 }

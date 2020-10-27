@@ -9,4 +9,6 @@ public class CourseResource {
     private Long id;
     private String name;
     private String description;
+
+
 }

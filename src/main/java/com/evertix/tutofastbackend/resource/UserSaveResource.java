@@ -1,6 +1,8 @@
 package com.evertix.tutofastbackend.resource;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -10,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class UserSaveResource {
@@ -47,7 +51,6 @@ public class UserSaveResource {
     @Size(max = 10, min = 8)
     private String dni;
 
-    @Column(unique = true)
     @NotNull(message = "Phone cannot be null")
     @NotBlank(message = "Phone cannot be blank")
     @Size(max = 12, min = 9)

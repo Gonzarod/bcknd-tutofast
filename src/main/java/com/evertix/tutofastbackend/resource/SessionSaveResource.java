@@ -1,6 +1,8 @@
 package com.evertix.tutofastbackend.resource;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -11,6 +13,8 @@ import java.util.Date;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class SessionSaveResource {
 
     @Column(nullable = false, updatable = false)

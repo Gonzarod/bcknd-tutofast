@@ -41,11 +41,14 @@ public class Plan extends AuditModel {
     @Digits(integer = 6, fraction = 2)
     private BigDecimal price;
 
-    public Plan(String title, String period, String description, Short hours, BigDecimal price) {
+    private Boolean available;
+
+    public Plan(String title, String period, String description, Short hours, BigDecimal price,Boolean available) {
         this.title=title;
         this.period=period;
         this.description=description;
         this.hours=hours;
         this.price=price;
+        this.available=available;
     }
 }

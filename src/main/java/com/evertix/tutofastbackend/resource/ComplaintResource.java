@@ -11,11 +11,11 @@ public class ComplaintResource {
 
     private Long id;
 
-    private String subject;
+    private String reason;
 
     private String description;
 
-    private User madeBy;
+    private SimpleUserResource madeBy;
 
-    private User reported;
+    private SimpleUserResource reported;
 }

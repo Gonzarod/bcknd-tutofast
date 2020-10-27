@@ -21,13 +21,11 @@ public class Complaint extends AuditModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     @NotNull(message = "Name cannot be null")
     @NotBlank(message = "Name cannot be blank")
     @Size(max = 250)
-    private String subject;
+    private String reason;
 
-    @Column(unique = true)
     @NotNull(message = "Name cannot be null")
     @NotBlank(message = "Name cannot be blank")
     @Size(max = 250)
@@ -35,13 +33,13 @@ public class Complaint extends AuditModel {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "madeBy_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     //@JsonIgnore
     private User madeBy;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "reported_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     //@JsonIgnore
     private User reported;
 
