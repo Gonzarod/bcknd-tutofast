@@ -2,7 +2,6 @@ package com.evertix.tutofastbackend.config;
 
 import com.evertix.tutofastbackend.model.*;
 import com.evertix.tutofastbackend.repository.*;
-import com.evertix.tutofastbackend.resource.ComplaintResource;
 import com.evertix.tutofastbackend.resource.SessionSaveResource;
 import com.evertix.tutofastbackend.security.payload.request.SignUpRequest;
 import com.evertix.tutofastbackend.service.AuthenticationService;
@@ -17,7 +16,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Component
-public class DataLoader {
+public class    DataLoader {
 
     private RoleRepository roleRepository;
     private CourseRepository courseRepository;
