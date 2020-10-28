@@ -32,7 +32,7 @@ public class PlanController {
     private PlanService planService;
 
     @GetMapping("/plans")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get All Plans", description = "Get all plans. Endpoint can be accessed by role admin.",
             tags = {"Plan"},
             parameters = {
@@ -68,7 +68,7 @@ public class PlanController {
     }
 
     @PostMapping("/plans")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Post Plan", description = "Create Plan. Endpoint can only be accessed by admin role",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public PlanResource createPlan(@Valid @RequestBody PlanSaveResource newPlan){
@@ -76,7 +76,7 @@ public class PlanController {
     }
 
     @PutMapping("/plans/{planId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Put Plan", description = "Update User. Endpoint can only be accessed by admin role",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public PlanResource updatePlan(@PathVariable(name = "planId") Long planId,
@@ -85,7 +85,7 @@ public class PlanController {
     }
 
     @PutMapping("/plans/available")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Makes available a list of plans", description = "Makes available a list of Plans. ID's of plans are required",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public List<PlanResource> makePlansAvailable(@RequestBody List<Long> plansIds){
@@ -93,7 +93,7 @@ public class PlanController {
     }
 
     @PutMapping("/plans/unavailable")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Makes unavailable a list of plans", description = "Makes unavailable a list of Plans. ID's of plans are required",
             security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public List<PlanResource> makePlansNonAvailable(@RequestBody List<Long> plansIds){
@@ -101,7 +101,7 @@ public class PlanController {
     }
 
     @DeleteMapping("/plans/{planId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Delete Plan", description = "Delete Plan. Endpoint can only be accessed by admin role",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
     public ResponseEntity<?> deletePlan(@PathVariable(name = "planId") Long planId){

@@ -1,6 +1,7 @@
 package com.evertix.tutofastbackend.service;
 
 import com.evertix.tutofastbackend.model.User;
+import com.evertix.tutofastbackend.resource.UserResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -25,4 +26,10 @@ public interface UserService {
     ResponseEntity<?> activateTeacher(Long userId);
 
     User getUserByUsername(String username);
+
+    Page<UserResource> getAllUsers(Pageable pageable);
+
+    Page<UserResource> getAllUsersStudents(Pageable pageable);
+
+    Page<UserResource> getAllUsersTeachers(Pageable pageable);
 }

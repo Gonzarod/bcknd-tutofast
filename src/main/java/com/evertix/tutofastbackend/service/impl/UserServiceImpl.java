@@ -1,25 +1,32 @@
 package com.evertix.tutofastbackend.service.impl;
 
 import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
-import com.evertix.tutofastbackend.model.Course;
-import com.evertix.tutofastbackend.model.ERole;
-import com.evertix.tutofastbackend.model.Role;
-import com.evertix.tutofastbackend.model.User;
+import com.evertix.tutofastbackend.model.*;
 import com.evertix.tutofastbackend.repository.CourseRepository;
 import com.evertix.tutofastbackend.repository.RoleRepository;
 import com.evertix.tutofastbackend.repository.UserRepository;
+import com.evertix.tutofastbackend.resource.PlanResource;
+import com.evertix.tutofastbackend.resource.PlanSaveResource;
+import com.evertix.tutofastbackend.resource.UserResource;
 import com.evertix.tutofastbackend.security.payload.response.MessageResponse;
 import com.evertix.tutofastbackend.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private ModelMapper mapper;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -156,5 +163,36 @@ public class UserServiceImpl implements UserService {
     public User getUserByUsername(String username) {
         return this.userRepository.findByUsername(username).orElseThrow(()->new ResourceNotFoundException("User not found"));
     }
+
+    @Override
+    public Page<UserResource> getAllUsers(Pageable pageable) {
+        Page<User> usersPage=this.userRepository.findAll(pageable);
+        List<UserResource> users=usersPage.stream().map(this::convertToResource).collect(Collectors.toList());
+        return new PageImpl<>(users,pageable,usersPage.getTotalElements());
+    }
+
+    //TODO: WRITE A QUERY TO OPTIMIZE
+    @Override
+    public Page<UserResource> getAllUsersStudents(Pageable pageable) {
+        //Set<Role> roles = new HashSet<>();
+        //roles.add(roleRepository.findByName(ERole.ROLE_TEACHER).get());
+        //Page<User> usersPage=this.userRepository.findAllByRoles(roles,pageable);
+        List<UserResource> users=userRepository.getAllUserByRole("ROLE_STUDENT").stream().map(this::convertToResource).collect(Collectors.toList());
+        //return new PageImpl<>(users,pageable,usersPage.getTotalElements());
+        return new PageImpl<>(users,pageable,pageable.getPageSize());
+    }
+    //TODO: WRITE A QUERY TO OPTIMIZE
+    @Override
+    public Page<UserResource> getAllUsersTeachers(Pageable pageable) {
+        //Set<Role> roles = new HashSet<>();
+        //roles.add(roleRepository.findByName(ERole.ROLE_TEACHER).get());
+        //Page<User> usersPage=this.userRepository.findAllByRoles(roles,pageable);
+        List<UserResource> users=userRepository.getAllUserByRole("ROLE_TEACHER").stream().map(this::convertToResource).collect(Collectors.toList());
+        //return new PageImpl<>(users,pageable,usersPage.getTotalElements());
+        return new PageImpl<>(users,pageable,pageable.getPageSize());
+    }
+
+    private User convertToEntity(UserResource resource){return mapper.map(resource, User.class);}
+    private UserResource convertToResource(User entity){return mapper.map(entity, UserResource.class);}
 
 }
