@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()//TODO :MODIFICAR !!!!!!!
-                .antMatchers("/api/user/**").permitAll()
+                .antMatchers("/api/users/**").permitAll()
                 .antMatchers("/api/courses/**").permitAll()
                 .antMatchers("/api/plans/**").permitAll()
                 .antMatchers("/api/subscriptions/**").permitAll()
