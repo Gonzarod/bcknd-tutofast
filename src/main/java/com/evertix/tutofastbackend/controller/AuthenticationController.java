@@ -46,7 +46,7 @@ public class AuthenticationController {
     @Operation(summary = "Get Role by Username. Endpoint is public", description = "Get Role by Username. Endpoint is public",
             tags = {"Authentication"})
     //,security = @SecurityRequirement(name = "bearerAuth")
-    public String getAllUsersStudents(@PathVariable String username){
+    public String getRoleByUsername(@PathVariable String username){
         return this.userService.getRoleByUsername(username);
     }
 
