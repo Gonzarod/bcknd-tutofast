@@ -40,7 +40,7 @@ public class AuthenticationController {
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         return this.authenticationService.authenticateUser(loginRequest);
     }
-
+/*
     @GetMapping("/username/{username}/role")
     //@PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get Role by Username. Endpoint is public", description = "Get Role by Username. Endpoint is public",
@@ -49,6 +49,8 @@ public class AuthenticationController {
     public String getRoleByUsername(@PathVariable String username){
         return this.userService.getRoleByUsername(username);
     }
+    
+ */
 
 
 
