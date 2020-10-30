@@ -164,6 +164,7 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findByUsername(username).orElseThrow(()->new ResourceNotFoundException("User not found"));
     }
 
+
     @Override
     public Page<UserResource> getAllUsers(Pageable pageable) {
         Page<User> usersPage=this.userRepository.findAll(pageable);
@@ -181,6 +182,24 @@ public class UserServiceImpl implements UserService {
         //return new PageImpl<>(users,pageable,usersPage.getTotalElements());
         return new PageImpl<>(users,pageable,pageable.getPageSize());
     }
+
+    @Override
+    public String getRoleByUsername(String username) {
+        Optional<Role> roleTeacher = this.roleRepository.findByName(ERole.ROLE_TEACHER);
+        Optional<Role> roleStudent = this.roleRepository.findByName(ERole.ROLE_STUDENT);
+        Optional<Role> roleAdmin = this.roleRepository.findByName(ERole.ROLE_ADMIN);
+        User user = this.userRepository.findByUsername(username).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        if (user.getRoles().contains(roleStudent.orElse(null))){
+            return "ROLE_STUDENT";
+        }else if (user.getRoles().contains(roleTeacher.orElse(null))) {
+            return "ROLE_TEACHER";
+        } else if (user.getRoles().contains(roleAdmin.orElse(null))){
+            return "ROLE_ADMIN";
+        } else {
+            return "NONE";
+        }
+    }
+
     //TODO: WRITE A QUERY TO OPTIMIZE
     @Override
     public Page<UserResource> getAllUsersTeachers(Pageable pageable) {

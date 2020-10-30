@@ -31,5 +31,7 @@ public interface UserService {
 
     Page<UserResource> getAllUsersStudents(Pageable pageable);
 
+    String getRoleByUsername(String username);
+
     Page<UserResource> getAllUsersTeachers(Pageable pageable);
 }

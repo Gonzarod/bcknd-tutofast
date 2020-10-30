@@ -1,7 +1,6 @@
 package com.evertix.tutofastbackend.controller;
 
 import com.evertix.tutofastbackend.model.User;
-import com.evertix.tutofastbackend.resource.PlanResource;
 import com.evertix.tutofastbackend.resource.UserResource;
 import com.evertix.tutofastbackend.resource.UserSaveResource;
 import com.evertix.tutofastbackend.service.UserService;
@@ -42,7 +41,7 @@ public class UserController {
     @GetMapping("/users")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Users", description = "Get all Users. Endpoint needs authentication.",
-            tags = {"Plan"},
+            tags = {"User"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -65,7 +64,7 @@ public class UserController {
     @GetMapping("/users/students")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Users of Role Students", description = "Get all Users of Role Students. Endpoint needs authentication.",
-            tags = {"Plan"},
+            tags = {"User"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -85,10 +84,19 @@ public class UserController {
         return this.userService.getAllUsersStudents(pageable);
     }
 
+    @GetMapping("/users/username/{username}/role")
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get Role by Username. Endpoint is public", description = "Get Role by Username. Endpoint is public",
+            tags = {"User"})
+    //,security = @SecurityRequirement(name = "bearerAuth")
+    public String getAllUsersStudents(@PathVariable String username){
+        return this.userService.getRoleByUsername(username);
+    }
+
     @GetMapping("/users/teachers")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Users of Role Teacher", description = "Get all Users of role Teachers. Endpoint needs authentication.",
-            tags = {"Plan"},
+            tags = {"User"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
