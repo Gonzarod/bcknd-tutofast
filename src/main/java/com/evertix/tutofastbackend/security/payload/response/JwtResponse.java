@@ -15,7 +15,8 @@ public class JwtResponse {
     private Long id;
     private String username;
     private String email;
-    private List<String> roles;
+    ///private List<String> roles;
+    private String roles;
     private String name;
     private String lastName;
     private String dni;
@@ -23,7 +24,8 @@ public class JwtResponse {
     private LocalDate birthday;
     private String address;
 
-    public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles, String name,
+    //List<String>
+    public JwtResponse(String accessToken, Long id, String username, String email, String roles, String name,
                       String lastName, String dni, String phone, LocalDate birthday, String address){
         this.token = accessToken;
         this.id = id;

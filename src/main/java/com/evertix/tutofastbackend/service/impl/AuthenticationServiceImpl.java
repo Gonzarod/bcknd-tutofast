@@ -126,9 +126,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             List<String> roles = userDetails.getAuthorities().stream()
                     .map(item -> item.getAuthority())
                     .collect(Collectors.toList());
+            String roleOne="";
+            for(String r: roles){
+                roleOne=roleOne.concat(r);
+            }
 
 
-            return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles, userDetails.getName(),
+            return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roleOne, userDetails.getName(),
                     userDetails.getLastName(), userDetails.getDni(), userDetails.getPhone(), userDetails.getBirthday(), userDetails.getAddress()));
         } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Bad Credentials"));
