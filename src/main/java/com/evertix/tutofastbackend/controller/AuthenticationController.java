@@ -44,7 +44,7 @@ public class AuthenticationController {
     @GetMapping("/username/{username}/role")
     //@PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get Role by Username. Endpoint is public", description = "Get Role by Username. Endpoint is public",
-            tags = {"User"})
+            tags = {"Authentication"})
     //,security = @SecurityRequirement(name = "bearerAuth")
     public String getAllUsersStudents(@PathVariable String username){
         return this.userService.getRoleByUsername(username);
