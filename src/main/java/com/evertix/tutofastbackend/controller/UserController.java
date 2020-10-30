@@ -84,15 +84,6 @@ public class UserController {
         return this.userService.getAllUsersStudents(pageable);
     }
 
-    @GetMapping("/users/username/{username}/role")
-    //@PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get Role by Username. Endpoint is public", description = "Get Role by Username. Endpoint is public",
-            tags = {"User"})
-    //,security = @SecurityRequirement(name = "bearerAuth")
-    public String getAllUsersStudents(@PathVariable String username){
-        return this.userService.getRoleByUsername(username);
-    }
-
     @GetMapping("/users/teachers")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Users of Role Teacher", description = "Get all Users of role Teachers. Endpoint needs authentication.",
