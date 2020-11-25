@@ -1,7 +1,5 @@
 package com.evertix.tutofastbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -11,7 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sessions")
@@ -23,10 +21,10 @@ public class Session extends AuditModel{
     private Long id;
 
     @Column(nullable = false, updatable = false)
-    private Date start_at;
+    private LocalDateTime start_at;
 
     @Column(nullable = false, updatable = false)
-    private Date end_at;
+    private LocalDateTime end_at;
 
     @NotNull(message = "Status cannot be null")
     @NotBlank(message = "Status cannot be blank")

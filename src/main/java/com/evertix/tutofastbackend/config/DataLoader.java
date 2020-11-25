@@ -10,10 +10,15 @@ import com.evertix.tutofastbackend.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.Console;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
+import java.util.logging.ConsoleHandler;
 
 @Component
 public class DataLoader {
@@ -27,11 +32,13 @@ public class DataLoader {
     private final ComplaintRepository complaintRepository;
     private final ReviewRepository reviewRepository;
     private final SessionService sessionService;
+    private final WorkExperienceRepository workExperienceRepository;
 
     @Autowired
     public DataLoader(RoleRepository roleRepository, CourseRepository courseRepository, AuthenticationService authenticationService,
                       UserRepository userRepository, PlanRepository planRepository, ComplaintRepository complaintRepository, SubscriptionService subscriptionService,
-                      ReviewRepository reviewRepository, SessionService sessionService) {
+                      ReviewRepository reviewRepository, SessionService sessionService,WorkExperienceRepository workExperienceRepository
+                      ) {
 
         this.roleRepository = roleRepository;
         this.courseRepository = courseRepository;
@@ -42,6 +49,7 @@ public class DataLoader {
         this.complaintRepository=complaintRepository;
         this.reviewRepository=reviewRepository;
         this.sessionService=sessionService;
+        this.workExperienceRepository=workExperienceRepository;
         loadData();
     }
 
@@ -56,54 +64,50 @@ public class DataLoader {
         this.addPlans();
         this.subscribeToPlan();
         this.addComplaint();
-        this.createSessionRequest();
         this.addReview();
+        this.createSessionRequest();
+
 
     }
 
     private void addPlans() {
 
-        this.planRepository.save(new Plan("Free","7 day of trial","You are given 4 hours of free session. You can use them within the next 5 days.",
-                                            (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP),true));
-
-        this.planRepository.save(new Plan("Basic","30 day","You are given 8 hours of sessions. You can use them in a period of 30 days",
-                (short) 8, BigDecimal.valueOf(90.50).setScale(2, RoundingMode.HALF_UP),true));
-
-        this.planRepository.save(new Plan("Platinum","30 day","You are given 12 hours of sessions. You can use them in a period of 30 days",
-                (short) 12, BigDecimal.valueOf(140.00).setScale(2, RoundingMode.HALF_UP),true));
-
-        this.planRepository.save(new Plan("Gold","30 day","You are given 20 hours of sessions. You can use them in a period of 30 days",
-                (short) 20, BigDecimal.valueOf(170.00).setScale(2, RoundingMode.HALF_UP),true));
-
-        this.planRepository.save(new Plan("Unlimited","Unlimited","You are given unlimited hours of sessions. You can use them in a period of 30 days",
-                (short) 30, BigDecimal.valueOf(250.00).setScale(2, RoundingMode.HALF_UP),true));
-
+        this.planRepository.saveAll(Arrays.asList(
+                new Plan("Free","7 day of trial","You are given 4 hours of free session. You can use them within the next 5 days.",
+                        (short) 4, BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP),true),
+                new Plan("Basic","30 day","You are given 8 hours of sessions. You can use them in a period of 30 days",
+                        (short) 8, BigDecimal.valueOf(90.50).setScale(2, RoundingMode.HALF_UP),true),
+                new Plan("Platinum","30 day","You are given 12 hours of sessions. You can use them in a period of 30 days",
+                        (short) 12, BigDecimal.valueOf(140.00).setScale(2, RoundingMode.HALF_UP),true),
+                new Plan("Gold","30 day","You are given 20 hours of sessions. You can use them in a period of 30 days",
+                        (short) 20, BigDecimal.valueOf(170.00).setScale(2, RoundingMode.HALF_UP),true),
+                new Plan("Unlimited","Unlimited","You are given unlimited hours of sessions. You can use them in a period of 30 days",
+                        (short) 30, BigDecimal.valueOf(250.00).setScale(2, RoundingMode.HALF_UP),true)
+        ));
     }
 
     void addRoles(){
-        List<Role> roles = new ArrayList<>();
-        roles.add(new Role(ERole.ROLE_STUDENT));
-        roles.add(new Role(ERole.ROLE_TEACHER));
-        roles.add(new Role(ERole.ROLE_ADMIN));
-
-        this.roleRepository.saveAll(roles);
+        //User Roles
+        this.roleRepository.saveAll(Arrays.asList(
+                new Role(ERole.ROLE_STUDENT),
+                new Role(ERole.ROLE_TEACHER),
+                new Role(ERole.ROLE_ADMIN)
+        ));
     }
 
     void addCourses(){
-        List<Course> courseList = new ArrayList<>();
 
-        //Course 1
-        Course course1 = new Course("Spanish", "Spanish");
-        Course course2 = new Course("History", "History");
-        Course course3 = new Course("Arithmetics", "Arithmetics");
-        Course course4 = new Course("Geometry", "Geometry");
-        Course course5 = new Course("Geography", "Geography");
-        courseList.add(course1);
-        courseList.add(course2);
-        courseList.add(course3);
-        courseList.add(course4);
-        courseList.add(course5);
-        this.courseRepository.saveAll(courseList);
+        this.courseRepository.saveAll(Arrays.asList(
+                new Course("Spanish", "Spanish"),
+                new Course("History", "History"),
+                new Course("Arithmetics", "Arithmetics"),
+                new Course("Geometry", "Geometry"),
+                new Course("Geography", "Geography"),
+                new Course("Algebra", "Algebra"),
+                new Course("Chemistry", "Chemistry"),
+                new Course("Physics", "Physics"),
+                new Course("Biology", "Biology")
+        ));
 
     }
 
@@ -113,49 +117,95 @@ public class DataLoader {
         roles.add("ROLE_ADMIN");
         SignUpRequest userAdmin = new SignUpRequest("jose.admin","password","jose@gmail.com",roles,"Jose",
                 "Flores","77332217","994093798",LocalDate.now(), "Jr Monte Caoba");
-        //this.userRepository.save(userStudent);
+
         this.authenticationService.registerUser(userAdmin);
 
     }
 
     void registerUserStudent(){
+
+        //Student Registration
+
         Set<String> roles = new HashSet<>();
         roles.add("ROLE_STUDENT");
         SignUpRequest userStudent = new SignUpRequest("jesus.student","password","jesus@gmail.com",roles,"Jesus",
-                "Duran","77332215","994093796", LocalDate.now(), "Jr Monte Algarrobo");
-        //this.userRepository.save(userStudent);
+                "Duran","77332215","994093796", LocalDate.of(2005,8,12), "Jr Monte Algarrobo 162");
+
+        SignUpRequest userStudent2 = new SignUpRequest("maria.student","password","maria@gmail.com",roles,"Maria",
+                "Suarez","88552215","986578231", LocalDate.of(2004,4,2), "Av Caminos del Inca 205");
+
         this.authenticationService.registerUser(userStudent);
+        this.authenticationService.registerUser(userStudent2);
 
     }
 
     void registerTeacher(){
 
+        //Teacher Registration
+
         Set<String> roles = new HashSet<>();
         roles.add("ROLE_TEACHER");
         SignUpRequest userTeacher = new SignUpRequest("albert.teacher","password","albert@gmail.com",roles,"Albert",
-                "Mayta","77332216","994093797",LocalDate.now(), "Jr Monte Cedro");
-        //this.userRepository.save(userStudent);
+                "Mayta","09987745","999666555",LocalDate.of(1989,12,12), "Av Tomas Marsano 605");
+
+        SignUpRequest userTeacher1 = new SignUpRequest("roberto.teacher","password","roberto@gmail.com",roles,"Roberto",
+                "Villanueva","09822145","987456123",LocalDate.of(1991,9,18), "Av Morro Solar 125");
+
         this.authenticationService.registerUser(userTeacher);
+        this.authenticationService.registerUser(userTeacher1);
+
+        //Set Work Experiences for User Teacher
+
+        WorkExperience workplace1 = new WorkExperience(LocalDate.of(2005,3,18),LocalDate.of(2010,12,18), "Colegio Alfonso Ugarte");
+        workplace1.setUser(this.userRepository.findByUsername("albert.teacher").get());
+        WorkExperience workplace2 = new WorkExperience(LocalDate.of(2010,3,18),LocalDate.of(2018,12,18), "Universidad Tecnologica del Perú");
+        workplace2.setUser(this.userRepository.findByUsername("albert.teacher").get());
+        WorkExperience workplace3 = new WorkExperience(LocalDate.of(2004,3,18),LocalDate.of(2009,12,18), "Colegio Trilce");
+        workplace3.setUser(this.userRepository.findByUsername("roberto.teacher").get());
+        WorkExperience workplace4 = new WorkExperience(LocalDate.of(2009,3,18),LocalDate.of(2019,12,18), "Universidad Mayor de San Marcos");
+        workplace4.setUser(this.userRepository.findByUsername("roberto.teacher").get());
+
+        workExperienceRepository.saveAll(Arrays.asList(workplace1,workplace2,workplace3,workplace4));
+
 
     }
 
     void setTeacherCourses(){
-        List<Course> courses = courseRepository.findAll();
-        Optional<User> user = this.userRepository.findByUsername("albert.teacher");
-        user.ifPresent(value -> {
-            value.setCourses(courses);
-            this.userRepository.save(value);
-        });
+
+
+
+        List<Course> allCourses = courseRepository.findAll();
+        Optional<User> teacher1 = this.userRepository.findByUsername("albert.teacher");
+        Optional<User> teacher2 = this.userRepository.findByUsername("roberto.teacher");
+
+        Random rand = new Random();
+        for (int i = 0; i < allCourses.size(); i++) {
+            int randomIndex = rand.nextInt(allCourses.size());
+            Course randomCourse = allCourses.get(randomIndex);
+            if(i%2==0){
+                teacher1.get().getCourses().add(randomCourse);
+                userRepository.save(teacher1.get());
+            }else {
+                teacher2.get().getCourses().add(randomCourse);
+                userRepository.save(teacher2.get());
+            }
+
+            allCourses.remove(randomIndex);
+        }
+
     }
 
 
     void subscribeToPlan(){
 
-        Optional<Plan> plan = this.planRepository.findByTitle("Free");
-        Optional<User> user = this.userRepository.findByUsername("jesus.student");
+        Optional<Plan> plan1 = this.planRepository.findByTitle("Free");
+        Optional<Plan> plan2 = this.planRepository.findByTitle("Platinum");
 
-        plan.ifPresent(plan1 -> user.ifPresent(user1 -> this.subscriptionService.subscribeToPlan(plan1.getId(),user1.getId())));
+        Optional<User> user1 = this.userRepository.findByUsername("jesus.student");
+        Optional<User> user2 = this.userRepository.findByUsername("maria.student");
 
+        plan1.ifPresent(planFree -> user1.ifPresent(userJesus -> this.subscriptionService.subscribeToPlan(userJesus.getId(),planFree.getId())));
+        plan2.ifPresent(planPlatinium -> user2.ifPresent(userMaria -> this.subscriptionService.subscribeToPlan(userMaria.getId(),planPlatinium.getId())));
 
 
     }
@@ -195,14 +245,48 @@ public class DataLoader {
     }
 
     void createSessionRequest(){
+        Optional<User> student1 = this.userRepository.findByUsername("jesus.student");
+        Optional<Course> course1 = this.courseRepository.findByName("History");
+        SessionSaveResource sessionSaveResource1=new SessionSaveResource(
+                LocalDateTime.of(2020, Month.NOVEMBER, 30, 18, 30),
+                LocalDateTime.of(2020, Month.NOVEMBER, 30, 20, 30),
+                "World War 2",EStatus.OPEN);
 
-        Optional<User> student = this.userRepository.findByUsername("jesus.student");
-        Optional<Course> course = this.courseRepository.findByName("Spanish");
-        SessionSaveResource sessionSaveResource=new SessionSaveResource(new Date(2020, Calendar.OCTOBER,22,17,0),
-                new Date(2020, Calendar.OCTOBER,22,19,0),
-                "Segunda Guerra Mundial");
+        this.sessionService.createSessionRequest(course1.get().getId(),student1.get().getId(), sessionSaveResource1);
 
-        student.ifPresent(student1-> course.ifPresent(course1 -> this.sessionService.createSessionRequest(student1.getId(),course1.getId(), sessionSaveResource)));
+
+        Optional<User> student2 = this.userRepository.findByUsername("maria.student");
+        Optional<Course> course2 = this.courseRepository.findByName("Biology");
+        SessionSaveResource sessionSaveResource2=new SessionSaveResource(
+                LocalDateTime.of(2020, Month.DECEMBER, 1, 13, 30),
+                LocalDateTime.of(2020, Month.DECEMBER, 1, 17, 30),
+                "Human Respiratory System",EStatus.OPEN);
+
+        this.sessionService.createSessionRequest(course2.get().getId(),student2.get().getId(), sessionSaveResource2);
+
+        List<Session> sessionsOpen=sessionService.getAllOpenSessionRequest();
+
+        Random rand = new Random();
+        System.out.println("-------------------------------------------------------");
+        System.out.println(sessionsOpen.size());
+
+        int randomIndex = rand.nextInt(sessionsOpen.size());
+        Session randomSession = sessionsOpen.get(randomIndex);
+        sessionService.applyToSession(randomSession.getId(),this.userRepository.findByUsername("albert.teacher").get().getId());
+        sessionService.applyToSession(randomSession.getId(),this.userRepository.findByUsername("roberto.teacher").get().getId());
+
+        /*
+        //Sessions OPEN
+
+
+        //Session With Teacher ApplieD
+
+        //Session Finished
+        //sessionRepository;
+        //sessionDetailRepository;
+
+        */
+
 
     }
 
@@ -210,4 +294,5 @@ public class DataLoader {
 
 
 }
+
 

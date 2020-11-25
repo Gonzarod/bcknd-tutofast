@@ -12,13 +12,15 @@ import java.util.List;
 public interface SessionService {
     Page<SessionResource> getAllSessions(Pageable pageable);
     ResponseEntity<?> createSessionRequest(Long courseId, Long studentId, SessionSaveResource session);
-
+    List<Session> getAllOpenSessionRequest();
+    List<Session> getAllFinishedSession();
     List<Session> getAllOpenSessionRequestsByStudentId(Long studentId);
     List<Session> getAllClosedSessionRequestsByStudentId(Long studentId);
     List<Session> getAllFinishedAndRatedSessionRequestsByStudentId(Long studentId);
     List<Session> getAllFinishedAndNoRatedSessionRequestsByStudentId(Long studentId);
 
     ResponseEntity<?> applyToSession(Long sessionId, Long teacherId);
+
 
     ResponseEntity<?> acceptTeacher(Long sessionDetailId);
 
@@ -30,7 +32,6 @@ public interface SessionService {
     Session createSession(Long courseId, Long studentId, Session session);
     Session updateSession(Long courseId, Long studentId, Long sessionId, Session sessionDetails);
     ResponseEntity<?> deleteSession(Long courseId, Long studentId, Long sessionId);
-
 
 
 

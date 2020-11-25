@@ -16,9 +16,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class SessionServiceImpl implements SessionService {
@@ -60,28 +65,38 @@ public class SessionServiceImpl implements SessionService {
         Session session=this.convertToEntity(sessionDetails);
 
         return userRepository.findById(studentId).map(user -> {
-            if(user.getRoles().contains(this.roleRepository.findByName(ERole.ROLE_STUDENT).get())){
-                if(this.hasActiveSubscription(user.getId())){
-                    if(user.getCreditHours()>=calculateHours(session.getEnd_at(),session.getStart_at())){
-                        return courseRepository.findById(courseId).map(course -> {
-                            session.setStudent(user);
-                            session.setCourse(course);
-                            session.setStatus(EStatus.OPEN);
-                            user.setCreditHours((short) (user.getCreditHours()-calculateHours(session.getEnd_at(),session.getStart_at())));
-                            return ResponseEntity.ok(convertToResource(sessionRepository.save(session)));
-                        }).orElseThrow(()-> new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
-                    }else {
-                        return ResponseEntity.badRequest().body(new MessageResponse("You dont have enough hours"));
-                    }
-                }else{
-                    return ResponseEntity.badRequest().body(new MessageResponse("Dont have any subscription"));
+            if(this.hasActiveSubscription(user.getId())){
+                if(user.getCreditHours()>=calculateHoursDifference(session.getStart_at(),session.getEnd_at())){
+                    return courseRepository.findById(courseId).map(course -> {
+                        session.setStudent(user);
+                        session.setCourse(course);
+                        session.setStatus(EStatus.OPEN);
+                        user.setCreditHours((short) (user.getCreditHours()-calculateHoursDifference(session.getStart_at(),session.getEnd_at())));
+                        userRepository.save(user);
+                        return ResponseEntity.ok(convertToResource(sessionRepository.save(session)));
+                    }).orElseThrow(()-> new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
+                }else {
+                    return ResponseEntity.badRequest().body(new MessageResponse("You dont have enough hours"));
                 }
-
             }else{
-                return ResponseEntity.badRequest().body(new MessageResponse("Only student can request a session"));
+                return ResponseEntity.badRequest().body(new MessageResponse("Dont have any subscription"));
             }
 
         }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+studentId+" not found"));
+    }
+
+    @Override
+    public List<Session> getAllOpenSessionRequest() {
+        return this.sessionRepository.getAllByStatusEquals(EStatus.OPEN);
+    }
+
+    @Override
+    public List<Session> getAllFinishedSession() {
+        List<Session> sessionsFinishedAndRated =this.sessionRepository.getAllByStatusEquals(EStatus.FINISHED_AND_RATED);
+        List<Session> sessionsFinishedAndNotRated = this.sessionRepository.getAllByStatusEquals(EStatus.FINISHED_AND_NO_RATED);
+
+        return Stream.concat(sessionsFinishedAndNotRated.stream(),sessionsFinishedAndRated.stream()).collect(Collectors.toList());
+
     }
 
     @Override
@@ -128,6 +143,7 @@ public class SessionServiceImpl implements SessionService {
     public ResponseEntity<?> acceptTeacher(Long sessionDetailId) {
         return this.sessionDetailRepository.findById(sessionDetailId).map(sessionDetail -> {
             if(sessionDetail.getSession().getStatus().equals(EStatus.OPEN)){
+                sessionDetail.getSession().setStatus(EStatus.CLOSED);
                 return ResponseEntity.ok(this.sessionDetailService.acceptTeacher(sessionDetailId));
             }else {
                 return ResponseEntity.badRequest().body(new MessageResponse("Session is no longer open"));
@@ -198,10 +214,9 @@ public class SessionServiceImpl implements SessionService {
         }).orElseThrow(()-> new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
     }
 
-    Short calculateHours(Date date1, Date date2){
-        long difference=  (date1.getTime()-date2.getTime())/(60 * 60 * 1000);
-
-        return (short) difference;
+    Short calculateHoursDifference(LocalDateTime fromDate, LocalDateTime toDate){
+        long hours = ChronoUnit.HOURS.between(fromDate,toDate);
+        return (short) hours;
         //return ;
     }
 

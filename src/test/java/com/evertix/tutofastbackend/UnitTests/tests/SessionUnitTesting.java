@@ -1,5 +1,6 @@
 package com.evertix.tutofastbackend.UnitTests.tests;
 
+import com.evertix.tutofastbackend.model.EStatus;
 import com.evertix.tutofastbackend.model.Session;
 import com.evertix.tutofastbackend.resource.PlanResource;
 import com.evertix.tutofastbackend.resource.SessionResource;
@@ -16,8 +17,8 @@ import org.springframework.http.ResponseEntity;
 
 
 import java.net.URL;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 public class SessionUnitTesting extends TutofastUnitTest {
@@ -36,9 +37,9 @@ public class SessionUnitTesting extends TutofastUnitTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         System.out.println("Todo ok--------------------------->0");
-        SessionSaveResource resource = new SessionSaveResource(new Date(2020, Calendar.OCTOBER,22,17,0),
-                                                              new Date(2020, Calendar.OCTOBER,22,19,0),
-                                                              "Segunda Guerra Mundial");
+        SessionSaveResource resource = new SessionSaveResource(LocalDateTime.of(2015, Month.JANUARY, 25, 6, 30),
+                                                                LocalDateTime.of(2015, Month.JANUARY, 25, 8, 30),
+                                                              "Segunda Guerra Mundial", EStatus.OPEN);
 
         System.out.println("Todo ok--------------------------->1");
         HttpEntity<?> request = new HttpEntity<>(resource, headers);

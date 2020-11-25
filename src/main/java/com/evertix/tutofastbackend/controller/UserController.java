@@ -164,7 +164,7 @@ public class UserController {
 
     @GetMapping("/users/username/{username}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get User By Id", description = "View User By Id. Endpoint can be accessed by any role.",
+    @Operation(summary = "Get User By Username", description = "View User By Username. Endpoint can be accessed by any role.",
             security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
     public UserResource getUserByUsername(@PathVariable String username){
         return convertToResource(userService.getUserByUsername(username));
