@@ -42,4 +42,8 @@ public class WorkExperience extends AuditModel{
         this.end_at=end_at;
         this.workplace=workplace;
     }
+
+    public WorkExperience() {
+
+    }
 }

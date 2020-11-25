@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> getAllByStudentIdAndStatusEquals(Long studentId, EStatus status);
+    List<Session> getAllByStatusEquals(EStatus status);
     Page<Session> getAllByStudentId(Long studentId, Pageable pageable);
     Page<Session> getAllByCourseName(String courseName, Pageable pageable);
     //Page<Session> getAllByStatus(EStatus status, Pageable pageable);

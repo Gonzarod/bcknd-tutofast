@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -11,9 +12,9 @@ import java.util.Date;
 public class SessionResource {
     private Long id;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date start_at;
+    private LocalDateTime start_at;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date end_at;
+    private LocalDateTime end_at;
     private String status;
     private String topic;
     private String link;
