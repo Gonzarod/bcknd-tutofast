@@ -121,19 +121,19 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public ResponseEntity<?> applyToSession(Long sessionId, Long teacherId) {
-        return sessionRepository.findById(sessionId).map(session->
-                userRepository.findById(teacherId).map(user -> {
 
-                    if (session.getStatus().equals(EStatus.OPEN)){
-                        return ResponseEntity.ok(
-                                this.sessionDetailService.createSessionDetail(sessionId,teacherId,new SessionDetail(false))
-                        );
-                    }else{
-                        return ResponseEntity.badRequest().body(new MessageResponse("The session request is no longer open"));
-                    }
+        return sessionRepository.findById(sessionId).map(session -> {
+            return userRepository.findById(teacherId).map(user -> {
+                if (session.getStatus().equals(EStatus.OPEN)){
+                    return ResponseEntity.ok(
+                            this.sessionDetailService.createSessionDetail(sessionId,teacherId,new SessionDetail(false))
+                    );
+                }else{
+                    return ResponseEntity.badRequest().body(new MessageResponse("The session request is no longer open"));
+                }
+            }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+teacherId+" not found"));
+        }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+teacherId+" not found"));
 
-                }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+teacherId+" not found")))
-                .orElseThrow(()-> new ResourceNotFoundException("User with Id: "+teacherId+" not found"));
     }
 
     @Override
