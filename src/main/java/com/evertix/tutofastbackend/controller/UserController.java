@@ -39,7 +39,8 @@ public class UserController {
 
 
     @GetMapping("/users")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get All Users", description = "Get all Users. Endpoint needs authentication.",
             tags = {"User"},
             parameters = {
@@ -56,13 +57,14 @@ public class UserController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<UserResource> getAllUsers(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.userService.getAllUsers(pageable);
     }
 
     @GetMapping("/users/students")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get All Users of Role Students", description = "Get all Users of Role Students. Endpoint needs authentication.",
             tags = {"User"},
             parameters = {
@@ -79,13 +81,14 @@ public class UserController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<UserResource> getAllUsersStudents(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.userService.getAllUsersStudents(pageable);
     }
 
     @GetMapping("/users/teachers")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get All Users of Role Teacher", description = "Get all Users of role Teachers. Endpoint needs authentication.",
             tags = {"User"},
             parameters = {
@@ -102,7 +105,7 @@ public class UserController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<UserResource> getAllUsersTeachers(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.userService.getAllUsersTeachers(pageable);
     }
@@ -121,74 +124,83 @@ public class UserController {
     }
 
     @PutMapping("users/teacher/{userId}/setLinkedin/")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Set Linkedin", description = "Allows to link Linkedin profile to your Tutofast account. Endpoint can only be accessed by role teacher and admin.",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+               tags = {"User"})
     public UserResource setLinkedinProfile(@PathVariable Long userId, @RequestBody String linkedin){
         return convertToResource(this.userService.setLinkedinProfile(userId,linkedin));
     }
 
 
     @PutMapping("users/teacher/{userId}/activate/")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Activate Teacher", description = "When a teacher register, he must be accepted by admin. When teacher is accepted then he can use the full app." +
             "                                                Endpoint can only be accessed by admin.",
-            security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+            tags = {"User"})
     public ResponseEntity<?> activateTeacher(@PathVariable Long userId){
         return this.userService.activateTeacher(userId);
     }
 
     @PutMapping("users/teacher/{userId}/addCourses/")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Add Courses", description = "Allows teacher to indicate the list courses that he teaches. Endpoint can only be accessed by role teacher and admin.",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+               tags = {"User"})
     public ResponseEntity<?> addCourses(@PathVariable Long userId, @RequestBody List<Long> coursesId){
         return this.userService.addCourses(userId,coursesId);
     }
 
     @PutMapping("users/teacher/{userId}/removeCourses/")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Remove Courses", description = "Allows to remove a list courses. Endpoint can only be accessed by role teacher and admin.",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+               tags = {"User"})
     public ResponseEntity<?> removeCourses(@PathVariable Long userId, @RequestBody List<Long> coursesId){
         return this.userService.removeCourses(userId,coursesId);
     }
 
     @GetMapping("/users/{userId}")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Get User By Id", description = "View User By Id. Endpoint can be accessed by any role.",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+               tags = {"User"})
     public UserResource getUserById(@PathVariable(name = "userId") Long userId){
         return convertToResource(userService.getUserById(userId));
     }
 
     @GetMapping("/users/username/{username}")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Get User By Username", description = "View User By Username. Endpoint can be accessed by any role.",
-            security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+            tags = {"User"})
     public UserResource getUserByUsername(@PathVariable String username){
         return convertToResource(userService.getUserByUsername(username));
     }
 
     @PutMapping("/users/{userId}")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Put User", description = "Update User. Endpoint can be accessed by any role.",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+               tags = {"User"})
     public UserResource updateUser(@PathVariable(name = "userId") Long userId,
                                    @Valid @RequestBody UserSaveResource resource){
         return convertToResource(userService.updateUser(userId, convertToEntity(resource)));
     }
 
     @DeleteMapping("/users/{userId}")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Delete User", description = "Delete User. Endpoint can only be accessed by role admin.",
-               security = @SecurityRequirement(name = "bearerAuth"), tags = {"User"})
+                tags = {"User"})
     public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long userId){
         return userService.deleteUser(userId);
     }
 
     @GetMapping("users/courses/{courseId}/teachers")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get All Course Teachers", description = "Get All the teachers that teach an specific course. Endpoint can be accessed by any role.", tags = {"Course"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
@@ -204,16 +216,17 @@ public class UserController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<UserResource> getAllTeachersOfOneCourse(@PathVariable Long courseId,@PageableDefault @Parameter(hidden = true) Pageable pageable){
         List<UserResource> userList = this.userService.getAllTeachersOfOneCourse(courseId).stream().map(user -> mapper.map(user,UserResource.class)).collect(Collectors.toList());
         return new PageImpl<>(userList, pageable, userList.size());
     }
 
     @DeleteMapping("/users/{userId}/baned")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Ban User", description = "Admin can ban user",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"User"})
+               tags = {"User"})
     public ResponseEntity<?> banUser(@PathVariable(name = "userId") Long userId){
         return userService.banUser(userId);
     }

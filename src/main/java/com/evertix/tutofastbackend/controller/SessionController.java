@@ -66,9 +66,10 @@ public class SessionController {
     }
 
     @PostMapping("/sessions/courses/{courseId}/students/{studentId}/request")
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT')")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Create a session request", description = "It allows students to request a session. Endpoint can only be accessed by role student",
-            security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            tags = {"Session"})
     public ResponseEntity<?> createSessionRequest(@PathVariable(name = "courseId") Long courseId,
                                                 @PathVariable(name = "studentId") Long studentId,
                                                 @Valid @RequestBody SessionSaveResource resource){
@@ -76,75 +77,84 @@ public class SessionController {
     }
 
     @GetMapping("/sessions/student/{studentId}/opens")
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT')")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get all students open session request", description = "It allows to fetch opens sessions request (sessions still with no teacher assigned). Endpoint can only be accessed by role student"
-            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            ,tags = {"Session"})
     public List<Session> getAllOpenSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
         return sessionService.getAllOpenSessionRequestsByStudentId(studentId);
     }
 
     @GetMapping("/sessions/student/{studentId}/closed")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get all students closed session request", description = "It allows to fetch closed sessions request ("+
                                                                                 "classes with assigned teacher but without class being taught). Endpoint can only be accessed by role student"
-            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            ,tags = {"Session"})
     public List<Session> getAllClosedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
         return sessionService.getAllClosedSessionRequestsByStudentId(studentId);
     }
 
     @GetMapping("/sessions/student/{studentId}/finishedRated")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get all students finished and rated sessions", description = "It allows to fetch finished and rated sessions request ("+
             "classes with assigned teacher but without class being taught). Endpoint can only be accessed by role student"
-            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            ,tags = {"Session"})
     public List<Session> getAllFinishedAndRatedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
         return sessionService.getAllFinishedAndRatedSessionRequestsByStudentId(studentId);
     }
 
     @GetMapping("/sessions/student/{studentId}/finishedNoRated")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //,security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Get all students finished and no rated session request", description = "It allows to fetch finished and no rated session"
-            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            ,tags = {"Session"})
     public List<Session> getAllFinishedAndNoRatedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
         return sessionService.getAllFinishedAndNoRatedSessionRequestsByStudentId(studentId);
     }
 
-    @PostMapping("/sessions/sessionDetail/{sessionId}/teacher/{teacherId}/apply")
-    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @PostMapping("/sessions/{sessionId}/teacher/{teacherId}/apply")
+    //@PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Apply to open session", description = "It allows teacher to apply to a session",
-            security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            tags = {"Session"})
     public ResponseEntity<?> applyToSession(@PathVariable Long sessionId,@PathVariable Long teacherId){
         return sessionService.applyToSession(sessionId,teacherId);
     }
 
     @GetMapping("/sessions/{sessionId}/detail")
     //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Get Session Detail", description = "It fetchs all user get",
-            security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            tags = {"Session"})
     public List<SessionDetail> getSessionDetail(@PathVariable Long sessionId){
         return sessionDetailService.getAllSessionDetailsBySessionId(sessionId);
     }
 
     @PostMapping("/sessions/sessionDetail/{sessionDetailId}")
     //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Choose Teacher", description = "This endpoint assigns a teacher to teach a session all user get",
-            security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            tags = {"Session"})
     public ResponseEntity<?> acceptTeacher(@PathVariable Long sessionDetailId){
         return sessionService.acceptTeacher(sessionDetailId);
     }
 
     @GetMapping("/sessions/open")
     //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get All Open Request", description = "Get All Open Request. Endpoint can only be accessed by role student and Admin"
-            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            ,tags = {"Session"})
     public List<Session> getAllOpenSessionRequest(){
         return sessionService.getAllOpenSessionRequest();
     }
 
     @GetMapping("/sessions/finished")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //,security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Get All Finished Sessions", description = "Get All Finished Sessions. Endpoint can be accessed by any role"
-            ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
+            ,tags = {"Session"})
     public List<Session> getAllFinishedSessionRequest(){
         return sessionService.getAllFinishedSession();
     }

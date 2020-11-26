@@ -31,7 +31,7 @@ public class ComplaintController {
     private ComplaintService complaintService;
 
     @GetMapping("/complaints/page")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Complaints Page", description = "Get Complaints Page", tags = {"Complaint"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
@@ -47,23 +47,23 @@ public class ComplaintController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<ComplaintResource> getAllComplaintsPaginated(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.complaintService.getAllComplaintsPage(pageable);
     }
 
     @GetMapping("/complaints/{complaintId}")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get All Complaints", description = "Get All Complaints", tags = {"Complaint"},
-            security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get All Complaints", description = "Get All Complaints", tags = {"Complaint"}
+            )
     public ComplaintResource getComplaintById(@PathVariable Long complaintId){
         return this.complaintService.getComplaintById(complaintId);
     }
 
     @GetMapping("/complaints/")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get All Complaints", description = "Get All Complaints", tags = {"Complaint"},
-               security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get All Complaints", description = "Get All Complaints", tags = {"Complaint"}
+               )
     public List<ComplaintResource> getAllComplaints(){
         return this.complaintService.getAllComplaints();
     }
@@ -80,7 +80,7 @@ public class ComplaintController {
     */
 
     @GetMapping("complaints/madeBy/{madeById}/page")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Complaints By MadeBy", description = "Get All Complaints By MadeBy", tags = {"Complaint"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
@@ -96,21 +96,20 @@ public class ComplaintController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<ComplaintResource> getAllComplaintsByMadeByIdPaginated(@PathVariable(name = "madeById") Long madeById, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.complaintService.getAllComplaintsByMadeById(madeById, pageable);
     }
 
     @GetMapping("complaints/madeBy/{madeById}")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get All Complaints By MadeBy", description = "Get All Complaints By MadeBy", tags = {"Complaint"},
-               security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get All Complaints By MadeBy", description = "Get All Complaints By MadeBy", tags = {"Complaint"})
     public List<ComplaintResource> getAllComplaintsByMadeById(@PathVariable(name = "madeById") Long madeById){
         return this.complaintService.getAllComplaintsByMadeById(madeById);
     }
 
     @GetMapping("complaints/reported/{reportedId}/page")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Complaints By Reported", description = "Get All Complaints By Reported", tags = {"Complaint"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
@@ -126,22 +125,21 @@ public class ComplaintController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<ComplaintResource> getAllComplaintsByReportedIdPaginated(@PathVariable(name = "reportedId") Long reportedId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.complaintService.getAllComplaintsByReportedId(reportedId, pageable);
     }
 
     @GetMapping("complaints/reported/{reportedId}/")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get All Complaints By Reported", description = "Get All Complaints By Reported", tags = {"Complaint"},
-            security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get All Complaints By Reported", description = "Get All Complaints By Reported", tags = {"Complaint"})
     public List<ComplaintResource> getAllComplaintsByReportedId(@PathVariable(name = "madeById") Long madeById){
         return this.complaintService.getAllComplaintsByReportedId(madeById);
     }
 
     @PostMapping("complaints/madeBy/{madeById}/reported/{reportedId}/")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Create Complaint", description = "Create Complaint", tags = {"Complaint"},security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Create Complaint", description = "Create Complaint", tags = {"Complaint"})
     public ComplaintResource createComplaint(@PathVariable(name = "madeById") Long madeById,
                                                  @PathVariable(name = "reportedId") Long reportedId,
                                                  @Valid @RequestBody ComplaintSaveResource resource){
