@@ -37,7 +37,7 @@ public class CourseUnitTesting extends TutofastUnitTest {
         ResponseEntity<RestPageImpl<CourseResource>> responseEntity = template.exchange(base.toString()+"/page", HttpMethod.GET,request,responseType);
 
         Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-        Assert.assertEquals("Size is "+responseEntity.getBody().getTotalElements(),5,responseEntity.getBody().getTotalElements());
+        Assert.assertEquals("Size is "+responseEntity.getBody().getTotalElements(),9,responseEntity.getBody().getTotalElements());
 
     }
 
