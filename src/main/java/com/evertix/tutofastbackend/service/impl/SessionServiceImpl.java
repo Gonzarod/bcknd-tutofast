@@ -123,18 +123,15 @@ public class SessionServiceImpl implements SessionService {
     public ResponseEntity<?> applyToSession(Long sessionId, Long teacherId) {
         return sessionRepository.findById(sessionId).map(session->
                 userRepository.findById(teacherId).map(user -> {
-                    if(user.getRoles().contains(this.roleRepository.findByName(ERole.ROLE_TEACHER).get())){
-                        if (session.getStatus().equals(EStatus.OPEN)){
-                            return ResponseEntity.ok(
-                                    this.sessionDetailService.createSessionDetail(sessionId,teacherId,new SessionDetail(false))
-                            );
-                        }else{
-                            return ResponseEntity.badRequest().body(new MessageResponse("The session request is no longer open"));
-                        }
 
+                    if (session.getStatus().equals(EStatus.OPEN)){
+                        return ResponseEntity.ok(
+                                this.sessionDetailService.createSessionDetail(sessionId,teacherId,new SessionDetail(false))
+                        );
                     }else{
-                        return ResponseEntity.badRequest().body(new MessageResponse("Only teachers can apply to a session"));
+                        return ResponseEntity.badRequest().body(new MessageResponse("The session request is no longer open"));
                     }
+
                 }).orElseThrow(()-> new ResourceNotFoundException("User with Id: "+teacherId+" not found")))
                 .orElseThrow(()-> new ResourceNotFoundException("User with Id: "+teacherId+" not found"));
     }
