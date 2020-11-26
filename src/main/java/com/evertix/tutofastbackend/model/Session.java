@@ -53,4 +53,20 @@ public class Session extends AuditModel{
     @OnDelete(action = OnDeleteAction.CASCADE)
     //@JsonIgnore
     private Course course;
+
+
+    public Session(LocalDateTime start_at,LocalDateTime end_at,EStatus status,String topic,String link,User student,Course course){
+        this.start_at=start_at;
+        this.end_at=end_at;
+        this.status=status;
+        this.topic=topic;
+        this.link=link;
+        this.student=student;
+        this.course=course;
+    }
+
+
+    public Session() {
+
+    }
 }

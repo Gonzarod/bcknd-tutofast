@@ -33,12 +33,14 @@ public class DataLoader {
     private final ReviewRepository reviewRepository;
     private final SessionService sessionService;
     private final WorkExperienceRepository workExperienceRepository;
+    private final SessionRepository sessionRepository;
+    private final SessionDetailRepository sessionDetailRepository;
 
     @Autowired
     public DataLoader(RoleRepository roleRepository, CourseRepository courseRepository, AuthenticationService authenticationService,
                       UserRepository userRepository, PlanRepository planRepository, ComplaintRepository complaintRepository, SubscriptionService subscriptionService,
-                      ReviewRepository reviewRepository, SessionService sessionService,WorkExperienceRepository workExperienceRepository
-                      ) {
+                      ReviewRepository reviewRepository, SessionService sessionService,WorkExperienceRepository workExperienceRepository,
+                      SessionRepository sessionRepository, SessionDetailRepository sessionDetailRepository) {
 
         this.roleRepository = roleRepository;
         this.courseRepository = courseRepository;
@@ -50,6 +52,8 @@ public class DataLoader {
         this.reviewRepository=reviewRepository;
         this.sessionService=sessionService;
         this.workExperienceRepository=workExperienceRepository;
+        this.sessionRepository=sessionRepository;
+        this.sessionDetailRepository=sessionDetailRepository;
         loadData();
     }
 
@@ -66,6 +70,7 @@ public class DataLoader {
         this.addComplaint();
         this.addReview();
         this.createSessionRequest();
+        this.createSessionHistory();
 
 
     }
@@ -195,7 +200,6 @@ public class DataLoader {
 
     }
 
-
     void subscribeToPlan(){
 
         Optional<Plan> plan1 = this.planRepository.findByTitle("Free");
@@ -245,6 +249,8 @@ public class DataLoader {
     }
 
     void createSessionRequest(){
+
+        //Create Session Request (STATUS = OPEN)
         Optional<User> student1 = this.userRepository.findByUsername("jesus.student");
         Optional<Course> course1 = this.courseRepository.findByName("History");
         SessionSaveResource sessionSaveResource1=new SessionSaveResource(
@@ -264,35 +270,45 @@ public class DataLoader {
 
         this.sessionService.createSessionRequest(course2.get().getId(),student2.get().getId(), sessionSaveResource2);
 
+        //Make teachers apply to a random session request
         List<Session> sessionsOpen=sessionService.getAllOpenSessionRequest();
 
         Random rand = new Random();
-        System.out.println("-------------------------------------------------------");
-        System.out.println(sessionsOpen.size());
-
         int randomIndex = rand.nextInt(sessionsOpen.size());
         Session randomSession = sessionsOpen.get(randomIndex);
         sessionService.applyToSession(randomSession.getId(),this.userRepository.findByUsername("albert.teacher").get().getId());
         sessionService.applyToSession(randomSession.getId(),this.userRepository.findByUsername("roberto.teacher").get().getId());
 
+    }
+
+    void createSessionHistory(){
+
+        Optional<User> student2 = this.userRepository.findByUsername("maria.student");
+        Optional<Course> course2 = this.courseRepository.findByName("Arithmetics");
+
+        Session session = new Session(LocalDateTime.of(2020, Month.NOVEMBER, 26, 13,0),
+                                      LocalDateTime.of(2020, Month.NOVEMBER, 26, 15,0),
+                                      EStatus.FINISHED_AND_RATED,
+                                "World War 2",
+                                        "www.skype.com/29",
+                                        student2.get(),
+                                        course2.get()
+                                        );
+        Session savedSession = this.sessionRepository.save(session);
+
+        Optional<User> teacher1 = this.userRepository.findByUsername("albert.teacher");
+        Optional<User> teacher2 = this.userRepository.findByUsername("roberto.teacher");
+
+        SessionDetail sessionDetail1 = new SessionDetail(false,savedSession,teacher1.get());
+        SessionDetail sessionDetail2 = new SessionDetail(true,savedSession,teacher2.get());
+
+        this.sessionDetailRepository.saveAll(Arrays.asList(sessionDetail1,sessionDetail2));
 
 
-        /*
-        //Sessions OPEN
 
-
-        //Session With Teacher ApplieD
-
-        //Session Finished
-        //sessionRepository;
-        //sessionDetailRepository;
-
-        */
 
 
     }
-
-
 
 
 }

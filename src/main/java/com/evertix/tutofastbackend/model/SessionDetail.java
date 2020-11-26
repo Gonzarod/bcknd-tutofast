@@ -37,6 +37,12 @@ public class SessionDetail extends AuditModel{
         this.chosen=chosen;
     }
 
+    public SessionDetail(Boolean chosen,Session session,User teacher) {
+        this.chosen=chosen;
+        this.session=session;
+        this.teacher=teacher;
+    }
+
     public SessionDetail() {
 
     }

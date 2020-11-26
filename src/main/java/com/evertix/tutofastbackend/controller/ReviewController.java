@@ -40,7 +40,8 @@ public class ReviewController {
     ReviewService reviewService;
 
     @GetMapping("/reviews")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
+    //,security = @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get All Reviews", description = "Get All Review", tags = {"Review"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
@@ -56,36 +57,36 @@ public class ReviewController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<ReviewResource> getAllReviews(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.reviewService.getAllReview(pageable);
     }
 
 
     @GetMapping("reviews/teacher/{teacherId}")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get Reviews By User Id", description = "Get Reviews By Teacher Id", tags = {"Review"},security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get Reviews By User Id", description = "Get Reviews By Teacher Id", tags = {"Review"})
     public Page<ReviewResource> getAllTeachersReviews(@PathVariable(name = "teacherId") Long teacherId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.reviewService.getReviewsByTeacher(teacherId, pageable);
     }
 
     @PostMapping("/reviews/student/{studentId}/teacher/{teacherId}")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Create To Review", description = "Student creates a Review of a Teacher", tags = {"Review"},security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Create To Review", description = "Student creates a Review of a Teacher", tags = {"Review"})
     public ReviewResource createReview(@PathVariable(name = "studentId") Long studentId,@PathVariable(name = "teacherId") Long teacherId,@Valid @RequestBody ReviewSaveResource resource){
         return this.reviewService.createReview(studentId, teacherId, resource);
     }
 
     @PutMapping("/reviews/{reviewId}")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Create To Review", description = "Student creates a Review of a Teacher", tags = {"Review"},security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Create To Review", description = "Student creates a Review of a Teacher", tags = {"Review"})
     public ReviewResource updateReviewDetails(@PathVariable(name = "reviewId") Long reviewId,@Valid @RequestBody ReviewSaveResource resource){
         return this.reviewService.updateReview(reviewId, resource);
     }
 
     @DeleteMapping("/reviews/{reviewId}")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Delete Review", description = "Student delete Review", tags = {"Review"},security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Delete Review", description = "Student delete Review", tags = {"Review"})
     public ResponseEntity<?> deleteReview(@PathVariable(name = "reviewId") Long reviewId){
         return reviewService.deleteReview(reviewId);
     }

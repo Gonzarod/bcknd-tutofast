@@ -32,7 +32,7 @@ public class PlanController {
     private PlanService planService;
 
     @GetMapping("/plans")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get All Plans", description = "Get all plans. Endpoint can be accessed by role admin.",
             tags = {"Plan"},
             parameters = {
@@ -49,7 +49,7 @@ public class PlanController {
                             + "Default sort order is ascending. " + "Multiple sort criteria are supported."
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
-            },security = @SecurityRequirement(name = "bearerAuth"))
+            })
     public Page<PlanResource> getAllPlans(@PageableDefault @Parameter(hidden = true) Pageable pageable){
         return this.planService.getAllPlans(pageable);
     }
@@ -68,42 +68,39 @@ public class PlanController {
     }
 
     @PostMapping("/plans")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Post Plan", description = "Create Plan. Endpoint can only be accessed by admin role",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Post Plan", description = "Create Plan. Endpoint can only be accessed by admin role",tags = {"Plan"})
     public PlanResource createPlan(@Valid @RequestBody PlanSaveResource newPlan){
         return planService.createPlan(newPlan);
     }
 
     @PutMapping("/plans/{planId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Put Plan", description = "Update User. Endpoint can only be accessed by admin role",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Put Plan", description = "Update User. Endpoint can only be accessed by admin role")
     public PlanResource updatePlan(@PathVariable(name = "planId") Long planId,
                                    @Valid @RequestBody PlanSaveResource planDetails){
         return planService.updatePlan(planId,planDetails);
     }
 
     @PutMapping("/plans/available")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Makes available a list of plans", description = "Makes available a list of Plans. ID's of plans are required",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Makes available a list of plans", description = "Makes available a list of Plans. ID's of plans are required")
     public List<PlanResource> makePlansAvailable(@RequestBody List<Long> plansIds){
         return planService.makePlansAvailable(plansIds);
     }
 
     @PutMapping("/plans/unavailable")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Makes unavailable a list of plans", description = "Makes unavailable a list of Plans. ID's of plans are required",
-            security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
+            tags = {"Plan"})
     public List<PlanResource> makePlansNonAvailable(@RequestBody List<Long> plansIds){
         return planService.makePlansNonAvailable(plansIds);
     }
 
     @DeleteMapping("/plans/{planId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Delete Plan", description = "Delete Plan. Endpoint can only be accessed by admin role",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Plan"})
+               tags = {"Plan"})
     public ResponseEntity<?> deletePlan(@PathVariable(name = "planId") Long planId){
         return planService.deletePlan(planId);
     }
