@@ -38,7 +38,7 @@ public class SubscriptionController {
     SubscriptionService subscriptionService;
 
     @GetMapping("/subscriptions")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Subscriptions", description = "Get All Subscription Details",
             security = @SecurityRequirement(name = "bearerAuth"), tags = {"Subscription"},
             parameters = {
@@ -63,7 +63,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("subscriptions/user/{userId}/plans")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get Subscription By User Id", description = "Get Subscription By User Id",
                security = @SecurityRequirement(name = "bearerAuth"), tags = {"Subscription"})
     public Page<SubscriptionResource> getUsersSubscriptions(@PathVariable(name = "userId") Long userId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
@@ -73,7 +73,7 @@ public class SubscriptionController {
     }
 
     @PostMapping("/subscriptions/userId/{userId}/plan/{planId}")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Subscribe To Plan", description = "User Subscribe To Plan",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"Subscription"})
     public ResponseEntity<?> subscribeToPlan(@PathVariable(name = "userId") Long userId,@PathVariable(name = "planId") Long planId){
@@ -82,7 +82,7 @@ public class SubscriptionController {
 
 
     @PutMapping("/subscriptions/userId/{userId}/plan/{planId}")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Unsubscribe To Plan", description = "User unsubscribe To Plan",
                security = @SecurityRequirement(name = "bearerAuth"),tags = {"Subscription"})
     public ResponseEntity<?> unsubscribeToPlan(@PathVariable(name = "userId") Long userId,@PathVariable(name = "planId") Long planId){

@@ -275,6 +275,8 @@ public class DataLoader {
         sessionService.applyToSession(randomSession.getId(),this.userRepository.findByUsername("albert.teacher").get().getId());
         sessionService.applyToSession(randomSession.getId(),this.userRepository.findByUsername("roberto.teacher").get().getId());
 
+
+
         /*
         //Sessions OPEN
 
