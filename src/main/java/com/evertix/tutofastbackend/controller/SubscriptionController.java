@@ -39,8 +39,8 @@ public class SubscriptionController {
 
     @GetMapping("/subscriptions")
     //@PreAuthorize("isAuthenticated()")
+    //security = @SecurityRequirement(name = "bearerAuth"), tags = {"Subscription"},
     @Operation(summary = "Get All Subscriptions", description = "Get All Subscription Details",
-            security = @SecurityRequirement(name = "bearerAuth"), tags = {"Subscription"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -64,8 +64,9 @@ public class SubscriptionController {
 
     @GetMapping("subscriptions/user/{userId}/plans")
     //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Get Subscription By User Id", description = "Get Subscription By User Id",
-               security = @SecurityRequirement(name = "bearerAuth"), tags = {"Subscription"})
+                tags = {"Subscription"})
     public Page<SubscriptionResource> getUsersSubscriptions(@PathVariable(name = "userId") Long userId, @PageableDefault @Parameter(hidden = true) Pageable pageable){
         Page<Subscription> subscriptionPage = subscriptionService.getUsersSubscriptions(userId, pageable);
         List<SubscriptionResource> resources = subscriptionPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
@@ -74,8 +75,9 @@ public class SubscriptionController {
 
     @PostMapping("/subscriptions/userId/{userId}/plan/{planId}")
     //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Subscribe To Plan", description = "User Subscribe To Plan",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Subscription"})
+               tags = {"Subscription"})
     public ResponseEntity<?> subscribeToPlan(@PathVariable(name = "userId") Long userId,@PathVariable(name = "planId") Long planId){
         return subscriptionService.subscribeToPlan(userId,planId);
     }
@@ -83,8 +85,9 @@ public class SubscriptionController {
 
     @PutMapping("/subscriptions/userId/{userId}/plan/{planId}")
     //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //security = @SecurityRequirement(name = "bearerAuth"),
     @Operation(summary = "Unsubscribe To Plan", description = "User unsubscribe To Plan",
-               security = @SecurityRequirement(name = "bearerAuth"),tags = {"Subscription"})
+               tags = {"Subscription"})
     public ResponseEntity<?> unsubscribeToPlan(@PathVariable(name = "userId") Long userId,@PathVariable(name = "planId") Long planId){
         return subscriptionService.unsubscribeToPlan(userId,planId);
     }

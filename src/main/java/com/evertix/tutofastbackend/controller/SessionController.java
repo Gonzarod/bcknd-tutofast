@@ -109,7 +109,7 @@ public class SessionController {
         return sessionService.getAllFinishedAndNoRatedSessionRequestsByStudentId(studentId);
     }
 
-    @PostMapping("/sessions/sessionDetail//teacher/{teacherId}/apply")
+    @PostMapping("/sessions/sessionDetail/{sessionId}/teacher/{teacherId}/apply")
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Apply to open session", description = "It allows teacher to apply to a session",
             security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
@@ -118,7 +118,7 @@ public class SessionController {
     }
 
     @GetMapping("/sessions/{sessionId}/detail")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get Session Detail", description = "It fetchs all user get",
             security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
     public List<SessionDetail> getSessionDetail(@PathVariable Long sessionId){
@@ -126,7 +126,7 @@ public class SessionController {
     }
 
     @PostMapping("/sessions/sessionDetail/{sessionDetailId}")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Choose Teacher", description = "This endpoint assigns a teacher to teach a session all user get",
             security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
     public ResponseEntity<?> acceptTeacher(@PathVariable Long sessionDetailId){
@@ -134,7 +134,7 @@ public class SessionController {
     }
 
     @GetMapping("/sessions/open")
-    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get All Open Request", description = "Get All Open Request. Endpoint can only be accessed by role student and Admin"
             ,security = @SecurityRequirement(name = "bearerAuth"),tags = {"Session"})
     public List<Session> getAllOpenSessionRequest(){
