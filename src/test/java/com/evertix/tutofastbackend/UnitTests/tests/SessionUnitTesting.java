@@ -36,24 +36,23 @@ public class SessionUnitTesting extends TutofastUnitTest {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        System.out.println("Todo ok--------------------------->0");
         SessionSaveResource resource = new SessionSaveResource(LocalDateTime.of(2015, Month.JANUARY, 25, 6, 30),
                                                                 LocalDateTime.of(2015, Month.JANUARY, 25, 8, 30),
                                                               "Segunda Guerra Mundial", EStatus.OPEN);
 
-        System.out.println("Todo ok--------------------------->1");
         HttpEntity<?> request = new HttpEntity<>(resource, headers);
-        System.out.println("Todo ok--------------------------->2");
         ResponseEntity<SessionResource> responseEntity = template.postForEntity(base.toString()+"courses/"+2+"/students/"+2+"/request",
                                                                     request, SessionResource.class);
-        System.out.println("Todo ok--------------------------->3");
-        Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
-        System.out.println("Todo ok--------------------------->4");
-        Assert.assertEquals("Topic is: "+responseEntity.getBody().getTopic(),"Segunda Guerra Mundial",responseEntity.getBody().getTopic());
-        System.out.println("Todo ok--------------------------->1");
 
+        Assert.assertEquals(responseEntity.getStatusCodeValue(),200,responseEntity.getStatusCodeValue());
+
+        Assert.assertEquals("Topic is: "+responseEntity.getBody().getTopic(),"Segunda Guerra Mundial",responseEntity.getBody().getTopic());
 
     }
+
+    /*
+    asdadasd
+    */
 
     @Test
     public void getClosedOpenRequest(){
