@@ -23,7 +23,7 @@ public class OpenApiConfig {
         // http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
         return new OpenAPI()
                 .components(new Components())
-                .info(new Info().title("TutoFast Application API Documentation").description(
+                .info(new Info().title("TutoFast Application API Documentation Version 2").description(
                         "TutoFast API implemented with Spring Boot RESTful service and documented using springdoc-openapi and OpenAPI 3."));
     }
 }
