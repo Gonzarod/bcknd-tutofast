@@ -2,11 +2,14 @@ package com.evertix.tutofastbackend.config;
 
 import com.evertix.tutofastbackend.model.*;
 import com.evertix.tutofastbackend.repository.*;
+import com.evertix.tutofastbackend.resource.ReviewSaveResource;
 import com.evertix.tutofastbackend.resource.SessionSaveResource;
 import com.evertix.tutofastbackend.security.payload.request.SignUpRequest;
 import com.evertix.tutofastbackend.service.AuthenticationService;
+import com.evertix.tutofastbackend.service.ReviewService;
 import com.evertix.tutofastbackend.service.SessionService;
 import com.evertix.tutofastbackend.service.SubscriptionService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,16 +34,19 @@ public class DataLoader {
     private final SubscriptionService subscriptionService;
     private final ComplaintRepository complaintRepository;
     private final ReviewRepository reviewRepository;
+    private final ReviewService reviewService;
     private final SessionService sessionService;
     private final WorkExperienceRepository workExperienceRepository;
     private final SessionRepository sessionRepository;
     private final SessionDetailRepository sessionDetailRepository;
 
+    private final ModelMapper   modelMapper = new ModelMapper();
+
     @Autowired
     public DataLoader(RoleRepository roleRepository, CourseRepository courseRepository, AuthenticationService authenticationService,
                       UserRepository userRepository, PlanRepository planRepository, ComplaintRepository complaintRepository, SubscriptionService subscriptionService,
                       ReviewRepository reviewRepository, SessionService sessionService,WorkExperienceRepository workExperienceRepository,
-                      SessionRepository sessionRepository, SessionDetailRepository sessionDetailRepository) {
+                      SessionRepository sessionRepository, SessionDetailRepository sessionDetailRepository,ReviewService reviewService) {
 
         this.roleRepository = roleRepository;
         this.courseRepository = courseRepository;
@@ -54,6 +60,7 @@ public class DataLoader {
         this.workExperienceRepository=workExperienceRepository;
         this.sessionRepository=sessionRepository;
         this.sessionDetailRepository=sessionDetailRepository;
+        this.reviewService=reviewService;
         loadData();
     }
 
@@ -244,7 +251,8 @@ public class DataLoader {
             review.setTeacher(teacher1);
         }));
 
-        this.reviewRepository.save(review);
+
+        this.reviewService.createReview(student.get().getId(), teacher.get().getId(),modelMapper.map(review, ReviewSaveResource.class));
 
     }
 

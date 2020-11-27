@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,8 +52,19 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewResource createReview(Long studentId,Long teacherId,ReviewSaveResource newReview) {
         Review review=convertToEntity(newReview);
+
         return userRepository.findById(studentId).map(student ->{
             return userRepository.findById(teacherId).map(teacher ->{
+                BigDecimal stars = BigDecimal.valueOf(review.getStars());
+                if (teacher.getAverageStars() == null) {
+                    teacher.setAverageStars(stars);
+                } else {
+                    Integer size=this.getTotalReviewsOfTeacher(teacherId);
+                    teacher.setAverageStars(teacher.getAverageStars()
+                            .multiply(BigDecimal.valueOf(size))
+                            .add(stars).divide(BigDecimal.valueOf(size+1)));
+                }
+                userRepository.save(teacher);
                 review.setStudent(student);
                 review.setTeacher(teacher);
                 return convertToResource(reviewRepository.save(review));
@@ -67,6 +79,11 @@ public class ReviewServiceImpl implements ReviewService {
             review.setStars(reviewDetails.getStars());
             return convertToResource(reviewRepository.save(review));
         }).orElseThrow(()-> new ResourceNotFoundException("Review with id: "+reviewId+"not found"));
+    }
+
+    @Override
+    public Integer getTotalReviewsOfTeacher(Long teacherId){
+        return this.reviewRepository.findAllByTeacherId(teacherId).size();
     }
 
     @Override

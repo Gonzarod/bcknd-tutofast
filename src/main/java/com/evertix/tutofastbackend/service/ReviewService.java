@@ -11,6 +11,7 @@ public interface ReviewService {
     Page<ReviewResource> getAllReview(Pageable pageable);
     Page<ReviewResource> getReviewsByTeacher(Long teacherId, Pageable pageable);
     ReviewResource createReview(Long studentId,Long teacherId,ReviewSaveResource newReview);
+    Integer getTotalReviewsOfTeacher(Long teacherId);
     ReviewResource updateReview(Long reviewId, ReviewSaveResource reviewDetails);
     ResponseEntity<?> deleteReview(Long reviewId);
 }
