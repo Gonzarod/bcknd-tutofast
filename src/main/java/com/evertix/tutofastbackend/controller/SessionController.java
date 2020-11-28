@@ -3,6 +3,7 @@ package com.evertix.tutofastbackend.controller;
 import com.evertix.tutofastbackend.model.Plan;
 import com.evertix.tutofastbackend.model.Session;
 import com.evertix.tutofastbackend.model.SessionDetail;
+import com.evertix.tutofastbackend.resource.CourseResource;
 import com.evertix.tutofastbackend.resource.PlanResource;
 import com.evertix.tutofastbackend.resource.SessionResource;
 import com.evertix.tutofastbackend.resource.SessionSaveResource;
@@ -112,6 +113,15 @@ public class SessionController {
             ,tags = {"Session"})
     public List<Session> getAllFinishedAndNoRatedSessionRequestsByStudentId(@PathVariable(name = "studentId") Long studentId){
         return sessionService.getAllFinishedAndNoRatedSessionRequestsByStudentId(studentId);
+    }
+
+    @GetMapping("/sessions/filtered")
+    //@PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get All Open Request Filtered", description = "Get All Session. Can filter by Course Id (param optional).Endpoint can be accessed by any role", tags = {"Course"}
+           )
+    public List<Session> getAllCoursesFiltered(@RequestParam(required = false) @Parameter(description = "is Optional") Long courseId){
+        //System.out.println(name);
+        return this.sessionService.getAllOpenRequestFiltered(courseId);
     }
 
     @PostMapping("/sessions/{sessionId}/teacher/{teacherId}/apply")

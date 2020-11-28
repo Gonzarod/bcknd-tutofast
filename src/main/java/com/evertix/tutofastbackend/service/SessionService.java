@@ -18,7 +18,7 @@ public interface SessionService {
     List<Session> getAllClosedSessionRequestsByStudentId(Long studentId);
     List<Session> getAllFinishedAndRatedSessionRequestsByStudentId(Long studentId);
     List<Session> getAllFinishedAndNoRatedSessionRequestsByStudentId(Long studentId);
-
+    List<Session> getAllOpenRequestFiltered(Long courseId);
     ResponseEntity<?> applyToSession(Long sessionId, Long teacherId);
 
 
