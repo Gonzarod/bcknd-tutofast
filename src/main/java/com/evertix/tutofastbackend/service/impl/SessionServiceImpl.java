@@ -120,6 +120,16 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public List<Session> getAllOpenRequestFiltered(Long courseId) {
+        if(courseId==null){
+            return this.sessionRepository.getAllByStatusEquals(EStatus.OPEN);
+        }else {
+            return this.sessionRepository.getAllByCourseIdAndStatusEquals(courseId,EStatus.OPEN);
+        }
+
+    }
+
+    @Override
     public ResponseEntity<?> applyToSession(Long sessionId, Long teacherId) {
 
         return sessionRepository.findById(sessionId).map(session -> {

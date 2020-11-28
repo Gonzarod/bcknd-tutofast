@@ -13,6 +13,8 @@ import java.util.List;
 public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> getAllByStudentIdAndStatusEquals(Long studentId, EStatus status);
     List<Session> getAllByStatusEquals(EStatus status);
+    //List<Session> getAllByStatusEqualsAndCourseId(EStatus status,Long CourseId);
+    List<Session> getAllByCourseIdAndStatusEquals(Long courseId,EStatus status);
     Page<Session> getAllByStudentId(Long studentId, Pageable pageable);
     Page<Session> getAllByCourseName(String courseName, Pageable pageable);
     //Page<Session> getAllByStatus(EStatus status, Pageable pageable);

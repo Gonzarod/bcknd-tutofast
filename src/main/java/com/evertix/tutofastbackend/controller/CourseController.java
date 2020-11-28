@@ -55,7 +55,7 @@ public class CourseController {
     }
 
     @GetMapping("/courses")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get All Courses", description = "Get All Courses. Can filter by name (param optional).Endpoint can be accessed by any role", tags = {"Course"}
             ,security = @SecurityRequirement(name = "bearerAuth"))
     public List<CourseResource> getAllCourses(@RequestParam(required = false) @Parameter(description = "is Optional") String name){
